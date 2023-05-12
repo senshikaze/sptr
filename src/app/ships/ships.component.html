@@ -1,0 +1,26 @@
+<div class="mx-8">
+    <table>
+        <tr>
+            <th class="px-4">Ship Name</th>
+            <th class="px-4">Role</th>
+            <th class="px-4">Ship Crew</th>
+            <th class="px-4">Frame</th>
+            <th class="px-4">Flight Status</th>
+            <th class="px-4">Waypoint</th>
+            <th class="px-4">System</th>
+            <th class="px-4">Cargo</th>
+            <th class="px-4">Fuel</th>
+        </tr>
+        <tr *ngFor="let ship of this.ships" >
+            <td class="px-4 text-left"><a [routerLink]="['/ships', ship.symbol]" class="hover:text-blue">{{ ship.registration.name }}</a></td>
+            <td class="px-4 text-left"> {{ ship.registration.role }} </td>
+            <td class="px-4 text-left"> {{ ship.crew.current}} / {{ ship.crew.capacity }} </td>
+            <td class="px-4 text-left"> {{ ship.frame.name }}</td>
+            <td class="px-4 text-left"> {{ ship.nav.status }} </td>
+            <td class="px-4 text-left"> {{ ship.nav.waypointSymbol }}</td>
+            <td class="px-4 text-left"> {{ ship.nav.systemSymbol }}</td>
+            <td class="px-4 text-left"> {{ ship.cargo.units }} / {{ ship.cargo.capacity }}</td>
+            <td class="px-4 text-left"> {{ ship.fuel.current }} / {{ ship.fuel.capacity }}</td>
+        </tr>
+    </table>
+</div>
