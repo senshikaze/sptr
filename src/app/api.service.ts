@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map, retry } from 'rxjs/operators';
+import { Observable, ObservableInput, throwError, timer } from 'rxjs';
+import { catchError, map, retry} from 'rxjs/operators';
 import { Ship } from './interfaces/ship';
 import { Agent } from './interfaces/agent';
 import { Response } from './interfaces/response';
 import { Waypoint } from './interfaces/waypoint';
 import { System } from './interfaces/system';
 import { Register } from './interfaces/register';
+import { Contract } from './interfaces/contract';
+import { DateTime } from 'luxon';
+import { ErrorService } from './error.service';
+import { ApiError } from './interfaces/apierror';
 
 const URL = "https://api.spacetraders.io/v2";
 
@@ -18,7 +22,7 @@ const URL = "https://api.spacetraders.io/v2";
 
 export class ApiService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private errorService: ErrorService) { }
 
   authenticated(): boolean {
     return this.getAccessCode() !== null
@@ -27,11 +31,17 @@ export class ApiService {
   /** misc functions */
   handleError(error: HttpErrorResponse): Observable<never> {
     if (error.status === 0) {
-      console.error("An error occorused:", error.error);
+      console.error("An error occored:", error.error);
     } else {
-      console.error(
-        `API server returned code ${error.status}, body was`, error.error
-      );
+      if (error.error instanceof Blob) {
+        error.error.text().then(text => {
+          let errorObj = JSON.parse(text) as ApiError;
+          this.errorService.setError(
+            true,
+            errorObj.error.message
+          )
+        });
+      }
     }
     return throwError(() => new Error('Something bad happened.'));
   }
@@ -70,6 +80,19 @@ export class ApiService {
     )
   }
 
+  retry(error: HttpErrorResponse, retryCount: number): ObservableInput<any> {
+    if (error.status == 429) {
+      // This request was rate-limited, we should
+      // delay to the deadline in x-ratelimit-reset
+      // (current rate: 2 per second (2023-05-13))
+      // do not wait for more than 1000ms, or less than 100ms
+      let resetDate = DateTime.fromISO(error.headers.get('x-ratelimit-reset') ?? '');
+      let diff = resetDate.diff(DateTime.now(), 'milliseconds').milliseconds;
+      return timer(Math.max(Math.min(diff, 1000), 100));
+    }
+    throw error;
+  }
+
   saveAccessCode(accessCode: string): string {
     localStorage.setItem(
       'accessCode', accessCode
@@ -85,6 +108,31 @@ export class ApiService {
       `${URL}/my/agent`,
       this.getOptions()
     ).pipe(
+      retry({count: 3, delay: this.retry}),
+      catchError(this.handleError),
+      map(response => response.data)
+    )
+  }
+
+  /** Get Contracts */
+  getContract(id: string): Observable<Contract> {
+    return this.http.get<Response<Contract>>(
+      `${URL}/my/contracts/${id}`,
+      this.getOptions()
+    ).pipe(
+      retry({count: 3, delay: this.retry}),
+      catchError(this.handleError),
+      map(response => response.data)
+    )
+  }
+
+  /** Get Contracts */
+  getContracts(): Observable<Contract[]> {
+    return this.http.get<Response<Contract[]>>(
+      `${URL}/my/contracts`,
+      this.getOptions()
+    ).pipe(
+      retry({count: 3, delay: this.retry}),
       catchError(this.handleError),
       map(response => response.data)
     )
@@ -96,6 +144,7 @@ export class ApiService {
       `${URL}/my/ships/${shipSymbol}`,
       this.getOptions()
     ).pipe(
+      retry({count: 3, delay: this.retry}),
       catchError(this.handleError),
       map(response => response.data)
     );
@@ -106,6 +155,7 @@ export class ApiService {
       `${URL}/my/ships`,
       this.getOptions()
     ).pipe(
+      retry({count: 3, delay: this.retry}),
       catchError(this.handleError),
       map(response => response.data)
     );
@@ -117,6 +167,7 @@ export class ApiService {
       `${URL}/systems/${systemSymbol}`,
       this.getOptions()
     ).pipe(
+      retry({count: 3, delay: this.retry}),
       catchError(this.handleError),
       map(response => response.data)
     );
@@ -128,6 +179,7 @@ export class ApiService {
       `${URL}/systems/${systemSymbol}/waypoints/${waypointSymbol}`,
       this.getOptions()
     ).pipe(
+      retry({count: 3, delay: this.retry}),
       catchError(this.handleError),
       map(response => response.data)
     )

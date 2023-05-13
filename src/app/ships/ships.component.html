@@ -1,26 +1,31 @@
-<div class="mx-8">
-    <table>
-        <tr>
-            <th class="px-4">Ship Name</th>
-            <th class="px-4">Role</th>
-            <th class="px-4">Ship Crew</th>
-            <th class="px-4">Frame</th>
-            <th class="px-4">Flight Status</th>
-            <th class="px-4">Waypoint</th>
-            <th class="px-4">System</th>
-            <th class="px-4">Cargo</th>
-            <th class="px-4">Fuel</th>
-        </tr>
-        <tr *ngFor="let ship of this.ships" >
-            <td class="px-4 text-left"><a [routerLink]="['/ships', ship.symbol]" class="hover:text-blue">{{ ship.registration.name }}</a></td>
-            <td class="px-4 text-left"> {{ ship.registration.role }} </td>
-            <td class="px-4 text-left"> {{ ship.crew.current}} / {{ ship.crew.capacity }} </td>
-            <td class="px-4 text-left"> {{ ship.frame.name }}</td>
-            <td class="px-4 text-left"> {{ ship.nav.status }} </td>
-            <td class="px-4 text-left"> {{ ship.nav.waypointSymbol }}</td>
-            <td class="px-4 text-left"> {{ ship.nav.systemSymbol }}</td>
-            <td class="px-4 text-left"> {{ ship.cargo.units }} / {{ ship.cargo.capacity }}</td>
-            <td class="px-4 text-left"> {{ ship.fuel.current }} / {{ ship.fuel.capacity }}</td>
-        </tr>
+<div class="mx-8" *ngIf="(ships$ | async) as ships">
+    <table class="table-auto">
+        <thead>
+            <tr>
+                <th class="px-4 text-left">Ship Name</th>
+                <th class="px-4 text-left">Role</th>
+                <th class="px-4 text-left">Ship Crew</th>
+                <th class="px-4 text-left">Frame</th>
+                <th class="px-4 text-left">Flight Status</th>
+                <th class="px-4 text-left">Waypoint</th>
+                <th class="px-4 text-left">System</th>
+                <th class="px-4 text-left">Cargo</th>
+                <th class="px-4 text-left">Fuel</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="bg-gray:[nth-child(odd)]" *ngFor="let ship of ships" >
+                <td class="px-4 text-left"> {{ ship.registration.name }}</td>
+                <td class="px-4 text-left"> {{ ship.registration.role }} </td>
+                <td class="px-4 text-left"> {{ ship.crew.current}} / {{ ship.crew.capacity }} </td>
+                <td class="px-4 text-left"> {{ ship.frame.name }}</td>
+                <td class="px-4 text-left"> {{ ship.nav.status }} </td>
+                <td class="px-4 text-left"> {{ ship.nav.waypointSymbol }}</td>
+                <td class="px-4 text-left"> {{ ship.nav.systemSymbol }}</td>
+                <td class="px-4 text-left"> {{ ship.cargo.units }} / {{ ship.cargo.capacity }}</td>
+                <td class="px-4 text-left"> {{ ship.fuel.current }} / {{ ship.fuel.capacity }}</td>
+                <a class="block border-2 border-teal p-2" [routerLink]="['/ships', ship.symbol]">View</a>
+            </tr>
+        </tbody>
     </table>
 </div>

@@ -6,6 +6,8 @@ import { SystemsComponent } from './systems/systems.component';
 import { SystemComponent } from './systems/system/system.component';
 import { WaypointsComponent } from './systems/waypoints/waypoints.component';
 import { WaypointComponent } from './systems/waypoints/waypoint/waypoint.component';
+import { ContractsComponent } from './contracts/contracts.component';
+import { ContractComponent } from './contracts/contract/contract.component';
 
 const routes: Routes = [
   {
@@ -29,6 +31,12 @@ const routes: Routes = [
           ]}
         ]
       }
+    ]
+  },
+  {
+    path: 'contracts', children: [
+      {path: '', component: ContractsComponent},
+      {path: ':id', component: ContractComponent}
     ]
   },
   {path: '**', component: ShipsComponent}

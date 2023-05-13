@@ -18,8 +18,20 @@ module.exports = {
       'teal': '#008080',
       'black': '#000000',
       'light-red': '#de4567',
+      'dark-red': '#982334',
+      'gray-hover': '#344354',
     },
-    extend: {},
+    extend: {
+      animation: {
+        fadeOut: 'fadeOut 2s ease-out',
+      },
+      keyFrames: theme => ({
+        fadeOut: {
+          '0%': {opacity: 1},
+          '100%': {opacity: 0}
+        },
+      }),
+    },
   },
   plugins: [],
 }

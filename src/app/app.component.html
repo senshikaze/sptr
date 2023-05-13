@@ -2,9 +2,10 @@
   <div class="border-b-2 border-b-teal mb-2">
     <h2 class="p-8 text-4xl">Space Trading</h2>
     <nav class="p-2">
-      <ul class="inline">
-        <li><a routerLink="/ships" class="hover:text-blue">Ships</a></li>
-        <li><a routerLink="/systems" class="hover:text-blue">Systems</a></li>
+      <ul class="flex">
+        <li><a routerLink="/ships" class="mr-6 hover:text-blue">Ships</a></li>
+        <li><a routerLink="/systems" class="mr-6 hover:text-blue">Systems</a></li>
+        <li><a routerLink="/contracts" class="mr-6 hover:text-blue">Contracts</a></li>
       </ul>
     </nav>
   </div>
@@ -16,3 +17,4 @@
   <div class="p-2"><sub>&copy; 2023 Kaze Industries; GNU GPL v3; <a href="https://github.com/senshikaze/sptr">Github</a></sub></div>
 </div>
 <app-register *ngIf="!registered"></app-register>
+<app-error-message *ngIf="errorService.errored" [error]="errorService.error" (closeError)="errorService.setError(false, '')"></app-error-message>

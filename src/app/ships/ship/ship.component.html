@@ -1,66 +1,14 @@
-<div class="p-4" *ngIf="( ship$ | async ) as ship">
-    <div class="m-2 p-4 border-b-teal border-b-2">
-        <h1 class="text-4xl p-2">{{ ship.registration.name }}</h1> <span class="text-sm">({{ ship.symbol }})</span>
+<div class="p-2" *ngIf="( ship$ | async ) as ship">
+    <div class="mb-2 p-4 border-b-teal border-b-2 flex">
+        <h1 class="flex-auto text-4xl p-2">{{ ship.registration.name }} <span class="text-sm">({{ ship.symbol }})</span></h1>
+        <ul>
+            <button class="p-2 border-2 border-teal hover:bg-gray-hover" (click)="move()" *ngIf="ship.nav.status != navStatus.IN_TRANSIT">{{ ship.nav.status == navStatus.DOCKED ? 'Orbit' : 'Dock' }}</button>
+        </ul>
     </div>
     <div>
-        <h2 class="text-2xl">Registration Information</h2>
-        <ul class="mb-6">
-            <li>Faction: {{ ship.registration.factionSymbol }}</li>
-            <li>Role: {{ ship.registration.role }}</li>
-        </ul>
-        <h2 class="text-2xl">Navigation</h2>
-        <ul class="mb-6">
-            <li>System: {{ ship.nav.systemSymbol }}</li>
-            <li>Waypoint: {{ ship.nav.waypointSymbol }}</li>
-            <li>Status: {{ ship.nav.status }}</li>
-            <li>Flight Mode: {{ ship.nav.flightMode }}</li>
-        </ul>
-        <h2 class="text-2xl">Crew</h2>
-        <ul class="mb-6">
-            <li>{{ ship.crew.current }} / {{ ship.crew.capacity }}</li>
-            <li>Required: {{ ship.crew.required }}</li>
-            <li>Rotation: {{ ship.crew.rotation }}</li>
-            <li>Morale {{ ship.crew.morale }}</li>
-            <li>Wages: {{ ship.crew.wages }}</li>
-        </ul>
-        <h2 class="text-2xl">Frame</h2>
-        <ul class="mb-6">
-            <li>Name: {{ ship.frame.name }} <span class="text-xs">({{ship.frame.symbol}})</span></li>
-            <li>Description: {{ ship.frame.description }}</li>
-            <li>Condition: {{ ship.frame.condition }}</li>
-            <li>Module Slots: {{ ship.frame.moduleSlots }}</li>
-            <li>Fuel Capacity {{ ship.frame.fuelCapacity }}</li>
-            <li><em class="text-sm italic">Requirements: power: {{ ship.frame.requirements.power }} | crew: {{ship.frame.requirements.crew}} | slots: {{ship.frame.requirements.slots}}</em></li>
-        </ul>
-        <h2 class="text-2xl">Reactor</h2>
-        <ul class="mb-6">
-            <li>Name: {{ ship.reactor.name }} <span class="text-xs">({{ship.reactor.symbol}})</span></li>
-            <li>Description: {{ ship.reactor.description }}</li>
-            <li>Condition: {{ ship.reactor.condition }}</li>
-            <li>Power Output: {{ ship.reactor.powerOutput }}</li>
-            <li><em class="text-sm italic">Requirements: power: {{ ship.reactor.requirements.power }} | crew: {{ship.reactor.requirements.crew}} | slots: {{ship.reactor.requirements.slots}}</em></li>
-        </ul>
-        <h2 class="text-2xl">Engine</h2>
-        <ul class="mb-6">
-            <li>Name: {{ ship.engine.name }} <span class="text-xs">({{ship.engine.symbol}})</span></li>
-            <li>Description: {{ ship.engine.description }}</li>
-            <li>Condition: {{ ship.engine.condition }}</li>
-            <li>Speed: {{ ship.engine.speed }}</li>
-            <li><em class="text-sm italic">Requirements: power: {{ ship.engine.requirements.power }} | crew: {{ship.engine.requirements.crew}} | slots: {{ship.engine.requirements.slots}}</em></li>
-        </ul>
-        <h2 class="text-2xl">Modules</h2>
-        <ul class="mb-6">
-            <li>TODO: {{ ship.modules.length }}</li>
-        </ul>
-        <h2 class="text-2xl">Cargo</h2>
-        <ul class="mb-6">
-            <li>{{ ship.cargo.units }} / {{ ship.cargo.capacity }}</li>
-            <li>{{ ship.cargo.inventory.length}}</li>
-        </ul>
-        <h2 class="text-2xl">Fuel</h2>
-        <ul class="mb-6">
-            <li>{{ ship.fuel.current }} / {{ ship.fuel.capacity }}</li>
-            <li>Most Recent Consumption: {{ ship.fuel.consumed.amount }} ({{ ship.fuel.consumed.timestamp }})</li>
-        </ul>
-
+        <app-shipregistration [ship]="ship"></app-shipregistration>
+        <app-shipnavigation [ship]="ship"></app-shipnavigation>
+        <app-shipcargo [ship]="ship"></app-shipcargo>
+        <app-shipconfiguration [ship]="ship"></app-shipconfiguration>
+        <app-shipcargo [ship]="ship"></app-shipcargo>
 </div>

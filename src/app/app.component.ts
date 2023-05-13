@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ApiService } from './api.service';
+import { ErrorService } from './error.service';
 
 @Component({
   selector: 'app-root',
@@ -7,9 +8,9 @@ import { ApiService } from './api.service';
 })
 export class AppComponent {
   registered: boolean = false;
+  title = 'Space Trader';
 
-  constructor(private api: ApiService) {
+  constructor(private api: ApiService, public errorService: ErrorService) {
     this.registered = this.api.authenticated();
   }
-  title = 'Space Trader';
 }
