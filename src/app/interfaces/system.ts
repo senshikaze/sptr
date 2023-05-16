@@ -1,7 +1,9 @@
+import { SystemType } from "../enums/system-type"
+
 export interface System {
     symbol: string
     sectorSymbol: string
-    type: string
+    type: SystemType
     x: number
     y: number
     waypoints: {

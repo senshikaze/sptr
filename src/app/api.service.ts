@@ -11,7 +11,6 @@ import { Register } from './interfaces/register';
 import { Contract } from './interfaces/contract';
 import { DateTime } from 'luxon';
 import { ErrorService } from './error.service';
-import { ApiError } from './interfaces/apierror';
 
 const URL = "https://api.spacetraders.io/v2";
 

@@ -1,1 +1,10 @@
-<p>system works!</p>
+<div *ngIf="system$ | async as system">
+    <h2>{{ system.symbol }}</h2>
+    <p>{{ system.sectorSymbol }}</p>
+    <p>{{ system.type }}</p>
+    <p>x: {{ system.x }}, y: {{ system.y }}</p>
+    <p>Waypoints</p>
+    <app-waypoints [systemSymbol]="system.symbol"></app-waypoints>
+    <p>Factions</p>
+    <p>TODO</p>
+</div>

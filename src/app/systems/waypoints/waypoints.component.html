@@ -1,1 +1,27 @@
-<p>waypoints works!</p>
+<div *ngIf="waypoints$ | async as waypoints">
+    <table class="table-auto">
+        <thead>
+            <tr>
+                <th class="px-4 text-left">Symbol</th>
+                <th class="px-4 text-left">System Symbol</th>
+                <th class="px-4 text-left">Type</th>
+                <th class="px-4 text-left">Position</th>
+                <th class="px-4 text-left">Orbitals</th>
+                <th class="px-4 text-left">Traits</th>
+                <th class="px-4 text-left">Charted On</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="odd:bg-gray-hover" *ngFor="let waypoint of waypoints" >
+                <td class="px-4 text-left">{{ waypoint.symbol }}</td>
+                <td class="px-4 text-left">{{ waypoint.systemSymbol }}</td>
+                <td class="px-4 text-left">{{ waypoint.type}}</td>
+                <td class="px-4 text-left">x: {{ waypoint.x }} y:{{ waypoint.y }}</td>
+                <td class="px-4 text-left">{{ waypoint.orbitals.length }}</td>
+                <td class="px-4 text-left">{{ waypoint.traits }}</td>
+                <td class="px-4 text-left">{{ waypoint.chart.submittedOn }}</td>
+                <a class="block border-2 border-teal p-2 m-2 bg-gray-dark hover:text-gray" [routerLink]="['/systems', waypoint.systemSymbol, '/wyapoints', waypoint.symbol]">View</a>
+            </tr>
+        </tbody>
+    </table>
+</div>
