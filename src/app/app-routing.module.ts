@@ -8,6 +8,7 @@ import { WaypointsComponent } from './systems/waypoints/waypoints.component';
 import { WaypointComponent } from './systems/waypoints/waypoint/waypoint.component';
 import { ContractsComponent } from './contracts/contracts.component';
 import { ContractComponent } from './contracts/contract/contract.component';
+import { AgentComponent } from './agent/agent.component';
 
 const routes: Routes = [
   {
@@ -35,11 +36,13 @@ const routes: Routes = [
   },
   {
     path: 'contracts', children: [
-      {path: '', component: ContractsComponent},
+      {path: '', component: ContractsComponent, pathMatch: "full"},
+      {path: 'my', component: ContractsComponent, data: {filter: "accepted"}},
       {path: ':id', component: ContractComponent}
     ]
   },
-  {path: '**', component: ShipsComponent}
+  {path: 'agent', component: AgentComponent},
+  {path: '**', component: AgentComponent}
 ];
 
 @NgModule({

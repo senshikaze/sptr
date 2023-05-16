@@ -10,7 +10,9 @@ export class AppComponent {
   registered: boolean = false;
   title = 'Space Trader';
 
-  constructor(private api: ApiService, public errorService: ErrorService) {
+  constructor(private api: ApiService, public errorService: ErrorService) { }
+
+  ngOnInit() {
     this.registered = this.api.authenticated();
   }
 }

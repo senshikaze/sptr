@@ -1,4 +1,4 @@
-<div class="mx-8" *ngIf="(contracts$ | async) as contracts">
+<div class="mx-8" *ngIf="contracts$ | async as contracts">
     <table>
         <tr>
             <th class="px-4 text-left">Type</th>
@@ -13,8 +13,8 @@
         <tr *ngFor="let contract of contracts" >
             <td class="px-4 text-left"> {{ contract.type }}</td>
             <td class="px-4 text-left"> {{ contract.factionSymbol }} </td>
-            <td class="px-4 text-left"> {{ contract.terms.payment.onAccepted }}</td>
-            <td class="px-4 text-left"> {{ contract.terms.payment.onFulfilled }}</td>
+            <td class="px-4 text-left"> {{ contract.terms.payment.onAccepted | number : '1.0-0' }} c</td>
+            <td class="px-4 text-left"> {{ contract.terms.payment.onFulfilled | number : '1.0-0' }} c</td>
             <td class="px-4 text-left"> TODO </td>
             <td class="px-4 text-left"> {{ contract.accepted }} </td>
             <td class="px-4 text-left"> {{ contract.fulfilled }} </td>

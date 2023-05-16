@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
 import { Router } from '@angular/router';
 import { Ship } from '../interfaces/ship';
-import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-ships',

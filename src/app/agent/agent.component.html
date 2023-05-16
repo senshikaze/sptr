@@ -1,0 +1,5 @@
+<div class="flex flex-col" *ngIf="agent$ | async as agent">
+    <h1 class="text-4xl">{{agent.symbol}}</h1>
+    <p>Credits: {{ agent.credits | number : '1.0-0' }} c</p>
+    <p>Headquaters: <a class="hover:text-blue" [routerLink]="['/systems', agent.headquarters]">{{ agent.headquarters }}</a></p>
+</div>

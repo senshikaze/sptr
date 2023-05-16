@@ -20,6 +20,8 @@ import { ShipConfigurationComponent } from './ships/ship/configuration.component
 import { ShipCrewComponent } from './ships/ship/crew.component';
 import { ShipCargoComponent } from './ships/ship/cargo.component';
 import { ErrorMessageComponent } from './error-message.component';
+import { AgentHeaderComponent } from './agent-header/agent-header.component';
+import { AgentComponent } from './agent/agent.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +41,8 @@ import { ErrorMessageComponent } from './error-message.component';
     ShipCrewComponent,
     ShipCargoComponent,
     ErrorMessageComponent,
+    AgentHeaderComponent,
+    AgentComponent,
   ],
   imports: [
     BrowserModule,

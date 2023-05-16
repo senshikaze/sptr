@@ -1,6 +1,10 @@
 <div class="flex flex-col min-h-screen">
   <div class="border-b-2 border-b-teal mb-2">
-    <h2 class="p-8 text-4xl">Space Trading</h2>
+    <div class="flex flex-row">
+      <h2 class="p-8 text-4xl">Space Trading</h2>
+      <span class="flex-auto"></span>
+      <app-agent-header></app-agent-header>
+    </div>
     <nav class="p-2">
       <ul class="flex">
         <li><a routerLink="/ships" class="mr-6 hover:text-blue">Ships</a></li>
@@ -14,7 +18,7 @@
       <router-outlet></router-outlet>
     </div>
   </div>
-  <div class="p-2"><sub>&copy; 2023 Kaze Industries; GNU GPL v3; <a href="https://github.com/senshikaze/sptr">Github</a></sub></div>
+  <div class="p-2"><sub>&copy; 2023 Kaze Industries; GNU GPL v3; <a class="hover:text-blue" href="https://github.com/senshikaze/sptr">Github</a></sub></div>
 </div>
 <app-register *ngIf="!registered"></app-register>
 <app-error-message *ngIf="errorService.errored" [error]="errorService.error" (closeError)="errorService.setError(false, '')"></app-error-message>

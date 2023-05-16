@@ -1,1 +1,25 @@
-<p>systems works!</p>
+<div>
+    <table class="table-auto">
+        <thead>
+            <tr>
+                <th class="px-4 text-left">Symbol</th>
+                <th class="px-4 text-left">Sector</th>
+                <th class="px-4 text-left">Type</th>
+                <th class="px-4 text-left">Position</th>
+                <th class="px-4 text-left">Waypoints</th>
+                <th class="px-4 text-left">Factions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="bg-gray:[nth-child(odd)]" *ngFor="let system of systems" >
+                <td class="px-4 text-left">{{ system.symbol }}</td>
+                <td class="px-4 text-left">{{ system.sectorSymbol }}</td>
+                <td class="px-4 text-left">{{ system.type}}</td>
+                <td class="px-4 text-left">x: {{ system.x }} y:{{ system.y }}</td>
+                <td class="px-4 text-left">{{ system.waypoints.length }}</td>
+                <td class="px-4 text-left">{{ system.factions.length }}</td>
+                <a class="block border-2 border-teal p-2" [routerLink]="['/systems', system.symbol]">View</a>
+            </tr>
+        </tbody>
+    </table>
+</div>

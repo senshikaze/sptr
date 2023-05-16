@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ApiService } from '../api.service';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { ActivatedRoute} from '@angular/router';
 import { Contract } from '../interfaces/contract';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-contracts',
@@ -11,13 +11,15 @@ import { Contract } from '../interfaces/contract';
 export class ContractsComponent {
   contracts$!: Observable<Contract[]>;
 
-  constructor(private api: ApiService, private router: Router) { }
+  constructor(private api: ApiService, private router: ActivatedRoute) { }
 
   ngOnInit() {
-    this.contracts$ = this.api.getContracts()
+    this.router.data.subscribe(d =>
+      this.contracts$ = this.api.getContracts(d['filter'])
+    ).unsubscribe();
   }
 
   accept() {
-    
+
   }
 }

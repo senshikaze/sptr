@@ -1,6 +1,6 @@
 export interface Agent {
     accountId: string
     symbol: string
-    headquaters: string
+    headquarters: string
     credits: number
 }
