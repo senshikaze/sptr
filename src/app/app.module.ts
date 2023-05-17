@@ -19,9 +19,10 @@ import { ShipNavigationComponent } from './ships/ship/navigation.component';
 import { ShipConfigurationComponent } from './ships/ship/configuration.component';
 import { ShipCrewComponent } from './ships/ship/crew.component';
 import { ShipCargoComponent } from './ships/ship/cargo.component';
-import { ErrorMessageComponent } from './error-message.component';
+import { ErrorMessageComponent } from './misc/error-message.component';
 import { AgentHeaderComponent } from './agent-header/agent-header.component';
 import { AgentComponent } from './agent/agent.component';
+import { PaginatorComponent } from './misc/paginator/paginator.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { AgentComponent } from './agent/agent.component';
     ErrorMessageComponent,
     AgentHeaderComponent,
     AgentComponent,
+    PaginatorComponent,
   ],
   imports: [
     BrowserModule,

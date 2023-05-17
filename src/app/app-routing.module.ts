@@ -21,14 +21,14 @@ const routes: Routes = [
   {
     path: 'systems',
     children: [
-      { path: '', component: SystemsComponent },
+      { path: '', component: SystemsComponent, pathMatch: "full"},
       {
-        path: ':symbol',
-        component: SystemComponent,
+        path: ':systemSymbol',
         children: [
+          {path: '', component: SystemComponent, pathMatch: "full"},
           {path: 'waypoints', children: [
-            {path: '', component: WaypointsComponent},
-            {path: ':symbol', component: WaypointComponent}
+            {path: '', component: WaypointsComponent, pathMatch: "full"},
+            {path: ':waypointSymbol', component: WaypointComponent}
           ]}
         ]
       }

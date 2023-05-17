@@ -15,15 +15,15 @@
         </thead>
         <tbody>
             <tr class="odd:bg-gray-hover" *ngFor="let ship of ships" >
-                <td class="px-4 text-left"> {{ ship.registration.name }}</td>
-                <td class="px-4 text-left"> {{ ship.registration.role }} </td>
-                <td class="px-4 text-left"> {{ ship.crew.current}} / {{ ship.crew.capacity }} </td>
-                <td class="px-4 text-left"> {{ ship.frame.name }}</td>
-                <td class="px-4 text-left"> {{ ship.nav.status }} </td>
-                <td class="px-4 text-left"> {{ ship.nav.waypointSymbol }}</td>
-                <td class="px-4 text-left"> {{ ship.nav.systemSymbol }}</td>
-                <td class="px-4 text-left"> {{ ship.cargo.units }} / {{ ship.cargo.capacity }}</td>
-                <td class="px-4 text-left"> {{ ship.fuel.current }} / {{ ship.fuel.capacity }}</td>
+                <td class="px-4 text-left">{{ ship.registration.name }}</td>
+                <td class="px-4 text-left">{{ ship.registration.role }}</td>
+                <td class="px-4 text-left">{{ ship.crew.current}} / {{ ship.crew.capacity }}</td>
+                <td class="px-4 text-left">{{ ship.frame.name }}</td>
+                <td class="px-4 text-left">{{ ship.nav.status }}</td>
+                <td class="px-4 text-left"><a class="hover:text-blue" [routerLink]="['/systems', ship.nav.systemSymbol, 'waypoints', ship.nav.waypointSymbol]">{{ ship.nav.waypointSymbol }}</a></td>
+                <td class="px-4 text-left"><a class="hover:text-blue" [routerLink]="['/systems', ship.nav.systemSymbol]">{{ship.nav.systemSymbol }}</a></td>
+                <td class="px-4 text-left">{{ ship.cargo.units }} / {{ ship.cargo.capacity }}</td>
+                <td class="px-4 text-left">{{ ship.fuel.current }} / {{ ship.fuel.capacity }}</td>
                 <a class="block border-2 border-teal p-2 m-2 bg-gray-dark hover:text-gray" [routerLink]="['/ships', ship.symbol]">View</a>
             </tr>
         </tbody>

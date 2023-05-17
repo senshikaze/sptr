@@ -18,7 +18,6 @@ const URL = "https://api.spacetraders.io/v2";
   providedIn: 'root'
 })
 
-
 export class ApiService {
 
   constructor(private http: HttpClient, private errorService: ErrorService) { }
@@ -53,7 +52,7 @@ export class ApiService {
     return localStorage.getItem('accessCode');
   }
 
-  getOptions(): Object {
+  getOptions(): {headers: HttpHeaders} {
     let accessCode = this.getAccessCode();
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -104,7 +103,33 @@ export class ApiService {
     return accessCode;
   }
 
-  /** API calls */
+  /** Generic API calls */
+  get<T>(path: string): Observable<Response<T>> {
+    return this.http.get<Response<T>>(
+      `${URL}/${path}`,
+      this.getOptions()
+    ).pipe(
+      catchError(this.handleError),
+      map(response => response)
+    );
+  }
+
+  post<T>(path: string, body: any): Observable<Response<T>> {
+    let headers = this.getOptions().headers;
+
+    return this.http.post<Response<T>>(
+      `${URL}/${path}`,
+      body,
+      {
+        headers: headers,
+        responseType: 'json'
+      }
+    ).pipe(
+      catchError(this.handleError),
+      map(response => response)
+    );
+  }
+  /** Reusable API calls */
 
   /** Get Agent */
   getAgent(): Observable<Agent> {

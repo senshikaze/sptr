@@ -19,4 +19,8 @@ export class ContractComponent {
       switchMap((params: ParamMap) => this.api.getContract(params.get('id')!))
     )
   }
+
+  accept() {
+    
+  }
 }

@@ -19,7 +19,7 @@ export class SystemComponent {
   ngOnInit() {
     this.system$ = this.router.paramMap.pipe(
       switchMap((params: ParamMap) => 
-        this.api.getSystem(params.get('symbol')!)
+        this.api.getSystem(params.get('systemSymbol')!)
       )
     );
   }

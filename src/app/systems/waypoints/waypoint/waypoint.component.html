@@ -1,1 +1,13 @@
-<p>waypoint works!</p>
+<div *ngIf="waypoint$ | async as waypoint">
+    <div class="mb-2 p-4 border-b-teal border-b-2 flex">
+        <h1 class="flex-auto text-4xl p-2">{{ waypoint.symbol }} <span class="text-sm">({{ waypoint.systemSymbol }}) ({{waypoint.type}}) (x:{{waypoint.x}} y:{{waypoint.y}})</span></h1>
+        <p></p>
+        <ul>
+        </ul>
+    </div>
+    <div>
+    <p>Traits</p>
+    <ul>
+        <li *ngFor="let trait of waypoint.traits">{{trait.name}}</li>
+    </ul>
+</div>

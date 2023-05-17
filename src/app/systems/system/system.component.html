@@ -1,8 +1,11 @@
 <div *ngIf="system$ | async as system">
-    <h2>{{ system.symbol }}</h2>
-    <p>{{ system.sectorSymbol }}</p>
-    <p>{{ system.type }}</p>
-    <p>x: {{ system.x }}, y: {{ system.y }}</p>
+    <div class="mb-2 p-4 border-b-teal border-b-2 flex">
+        <h1 class="flex-auto text-4xl p-2">{{ system.symbol }} <span class="text-sm">({{ system.sectorSymbol }}) ({{system.type}}) (x:{{system.x}} y:{{system.y}})</span></h1>
+        <p></p>
+        <ul>
+        </ul>
+    </div>
+    <div>
     <p>Waypoints</p>
     <app-waypoints [systemSymbol]="system.symbol"></app-waypoints>
     <p>Factions</p>

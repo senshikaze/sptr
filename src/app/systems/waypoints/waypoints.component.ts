@@ -13,6 +13,7 @@ export class WaypointsComponent {
   waypoints$!: Observable<Waypoint[]>;
   limit: number = 20;
   page: number = 1;
+  total: number = 0;
 
   constructor(private api: ApiService, private router: ActivatedRoute) {}
 
@@ -21,13 +22,22 @@ export class WaypointsComponent {
       // we were loaded via the router, get the param
       // TODO is there a better way to do this?
       this.waypoints$ = this.router.paramMap.pipe(
-        switchMap((params: ParamMap) => this.api.getWaypoints(params.get('systemSybmol')!, this.limit, this.page).pipe(
-          map(response => {this.limit = response.meta.limit; this.page = response.meta.page; return response.data})
+        switchMap((params: ParamMap) => this.api.getWaypoints(params.get('systemSymbol')!, this.limit, this.page).pipe(
+          map(response => {
+            this.limit = response.meta.limit;
+            this.page = response.meta.page;
+            return response.data
+          })
         )
       ));
     } else {
       this.waypoints$ = this.api.getWaypoints(this.systemSymbol, this.limit, this.page).pipe(
-        map(response => {this.limit = response.meta.limit; this.page = response.meta.page; return response.data})
+        map(response => {
+          this.limit = response.meta.limit;
+          this.page = response.meta.page;
+          this.total = response.meta.total;
+          return response.data
+        })
       );
 
     }
