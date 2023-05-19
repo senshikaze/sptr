@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
 import { Agent } from '../interfaces/agent';
@@ -9,7 +9,7 @@ import { Agent } from '../interfaces/agent';
   styles: [
   ]
 })
-export class AgentComponent {
+export class AgentComponent implements OnInit {
   agent$!: Observable<Agent>;
 
   constructor(private api: ApiService) {}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
 import { Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { Ship } from '../interfaces/ship';
   selector: 'app-ships',
   templateUrl: './ships.component.html'
 })
-export class ShipsComponent {
+export class ShipsComponent implements OnInit {
   ships$!: Observable<Ship[]>;
 
   constructor(private api: ApiService, private router: Router) {}

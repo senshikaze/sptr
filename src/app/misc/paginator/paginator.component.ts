@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-paginator',
@@ -12,7 +12,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
     </ul>
   `
 })
-export class PaginatorComponent {
+export class PaginatorComponent implements OnInit {
   @Input() page!: number;
   @Input() limit!: number;
   @Input() total!: number;

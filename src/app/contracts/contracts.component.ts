@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
 import { ActivatedRoute} from '@angular/router';
 import { Contract } from '../interfaces/contract';
@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
   selector: 'app-contracts',
   templateUrl: './contracts.component.html'
 })
-export class ContractsComponent {
+export class ContractsComponent implements OnInit {
   contracts$!: Observable<Contract[]>;
 
   constructor(private api: ApiService, private router: ActivatedRoute) { }
@@ -19,7 +19,4 @@ export class ContractsComponent {
     ).unsubscribe();
   }
 
-  accept() {
-
-  }
 }

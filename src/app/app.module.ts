@@ -6,7 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ShipsComponent } from './ships/ships.component';
-import { RegisterComponent } from './register/register.component';
+import { RegisterComponent } from './misc/register/register.component';
 import { ShipComponent } from './ships/ship/ship.component';
 import { SystemsComponent } from './systems/systems.component';
 import { SystemComponent } from './systems/system/system.component';
@@ -23,6 +23,12 @@ import { ErrorMessageComponent } from './misc/error-message.component';
 import { AgentHeaderComponent } from './agent-header/agent-header.component';
 import { AgentComponent } from './agent/agent.component';
 import { PaginatorComponent } from './misc/paginator/paginator.component';
+import { LuxonDatePipe } from './pipes/luxon-date.pipe';
+import { LuxonRelativePipe } from './pipes/luxon-relative.pipe';
+import { ShipyardComponent } from './systems/waypoints/shipyard/shipyard.component';
+import { MarketplaceComponent } from './systems/waypoints/marketplace/marketplace.component';
+import { JumpGateComponent } from './systems/waypoints/jump-gate/jump-gate.component';
+import { TransitComponent } from './ships/ship/transit/transit.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +51,12 @@ import { PaginatorComponent } from './misc/paginator/paginator.component';
     AgentHeaderComponent,
     AgentComponent,
     PaginatorComponent,
+    LuxonDatePipe,
+    LuxonRelativePipe,
+    ShipyardComponent,
+    MarketplaceComponent,
+    JumpGateComponent,
+    TransitComponent,
   ],
   imports: [
     BrowserModule,

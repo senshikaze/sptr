@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, switchMap } from 'rxjs';
+import { Observable, map, switchMap } from 'rxjs';
 import { ParamMap } from '@angular/router';
 import { ApiService } from 'src/app/api.service';
 import { Contract } from 'src/app/interfaces/contract';
@@ -9,7 +9,7 @@ import { Contract } from 'src/app/interfaces/contract';
   selector: 'app-contract',
   templateUrl: './contract.component.html'
 })
-export class ContractComponent {
+export class ContractComponent implements OnInit {
   contract$!: Observable<Contract>;
 
   constructor(private api: ApiService, private router: ActivatedRoute) {}
@@ -20,7 +20,9 @@ export class ContractComponent {
     )
   }
 
-  accept() {
-    
+  accept(id: string) {
+    this.contract$ = this.api.post<Contract>(`contracts/${id}`).pipe(
+      map(response => response.data)
+    );
   }
 }

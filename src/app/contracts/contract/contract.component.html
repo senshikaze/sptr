@@ -3,31 +3,35 @@
         <h1 class="flex-auto text-4xl p-2">{{ contract.type }} <span class="text-sm">({{ contract.factionSymbol }})</span></h1>
         <p></p>
         <ul>
-            <button class="p-2 border-2 border-teal hover:bg-gray-hover" (click)="accept()" *ngIf="!contract.accepted || !contract.fulfilled">Accept</button>
+            <button class="p-2 border-2 border-teal hover:bg-gray-hover" (click)="accept(contract.id)" *ngIf="!contract.accepted || !contract.fulfilled">Accept</button>
         </ul>
     </div>
-    <div>
-    <h2 class="text-xl">Terms</h2>
-    <p>Deadline: {{contract.terms.deadline}}</p>
-    <p>Payment on Acceptance: {{contract.terms.payment.onAccepted | number : '1.0-0'}} c</p>
-    <p>Payment on Fulfillment: {{contract.terms.payment.onFulfilled | number : '1.0-0'}} c</p>
-    <p>Total: <b>{{contract.terms.payment.onFulfilled + contract.terms.payment.onAccepted | number : '1.0-0'}} c</b></p>
-
-    <h2 class="text-xl">Deliver</h2>
-    <table class="table-auto">
-        <thead>
-            <tr>
-                <th class="px-4 text-left">Item</th>
-                <th class="px-4 text-left">Destination</th>
-                <th class="px-4 text-left">Units</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let trade of contract.terms.deliver">
-                <td class="px-4 text-left"> {{trade.tradeSymbol}} </td>
-                <td class="px-4 text-left"><a class="hover:text-blue" [routerLink]="['/waypoints', trade.destinationSymbol]">{{trade.destinationSymbol}}</a></td>
-                <td>{{ trade.unitsFulfilled }} / {{ trade.unitsRequired }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="mb-2">
+        <h2 class="text-xl">Terms</h2>
+        <ul>
+            <li>Deadline: {{ contract.terms.deadline | formatdate }} ({{ contract.terms.deadline | relativedate }})</li>
+            <li>Payment on Acceptance: {{ contract.terms.payment.onAccepted | number : '1.0-0' }} c</li>
+            <li>Payment on Fulfillment: {{ contract.terms.payment.onFulfilled | number : '1.0-0' }} c</li>
+            <li>Total Payment: <b>{{ contract.terms.payment.onFulfilled + contract.terms.payment.onAccepted | number : '1.0-0' }} c</b></li>
+        </ul>
+    </div>
+    <div class="mb-2">
+        <h2 class="text-xl">Deliver</h2>
+        <table class="table-auto">
+            <thead>
+                <tr>
+                    <th class="px-4 text-left">Item</th>
+                    <th class="px-4 text-left">Destination</th>
+                    <th class="px-4 text-left">Units</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="odd:bg-gray-hover" *ngFor="let trade of contract.terms.deliver">
+                    <td class="px-4 text-left">{{ trade.tradeSymbol }}</td>
+                    <td class="px-4 text-left"><a class="hover:text-blue" [routerLink]="['/waypoints', trade.destinationSymbol]">{{ trade.destinationSymbol }}</a></td>
+                    <td>{{ trade.unitsFulfilled }} / {{ trade.unitsRequired }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

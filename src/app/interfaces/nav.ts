@@ -1,7 +1,7 @@
 import { Route } from "./route"
 
 export interface Nav {
-    systemSymbol: String
+    systemSymbol: string
     waypointSymbol: String
     route: Route
     status: string

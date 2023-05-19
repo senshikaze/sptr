@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { System } from '../interfaces/system';
 import { ApiService } from '../api.service';
@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   selector: 'app-systems',
   templateUrl: './systems.component.html'
 })
-export class SystemsComponent {
+export class SystemsComponent implements OnInit {
   systems$!: Observable<System[]>;
   page: number = 1;
   total: number = 0;

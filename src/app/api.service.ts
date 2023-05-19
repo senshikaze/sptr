@@ -105,6 +105,9 @@ export class ApiService {
 
   /** Generic API calls */
   get<T>(path: string): Observable<Response<T>> {
+    if (!this.authenticated) {
+      return of();
+    }
     return this.http.get<Response<T>>(
       `${URL}/${path}`,
       this.getOptions()
@@ -114,7 +117,11 @@ export class ApiService {
     );
   }
 
-  post<T>(path: string, body: any): Observable<Response<T>> {
+  post<T>(path: string, body: any = {}): Observable<Response<T>> {
+    if (!this.authenticated) {
+      return of();
+    }
+
     let headers = this.getOptions().headers;
 
     return this.http.post<Response<T>>(

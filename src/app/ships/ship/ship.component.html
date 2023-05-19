@@ -1,15 +1,22 @@
 <div class="p-2" *ngIf="( ship$ | async ) as ship">
     <div class="mb-2 p-4 border-b-teal border-b-2 flex">
-        <h1 class="flex-auto text-4xl p-2">{{ ship.registration.name }} <span class="text-sm">({{ ship.symbol }})</span></h1>
-        <ul>
-            <button class="p-2 border-2 border-teal hover:bg-gray-hover" (click)="move()" *ngIf="ship.nav.status != navStatus.IN_TRANSIT">{{ ship.nav.status == navStatus.DOCKED ? 'Orbit' : 'Dock' }}</button>
+        <h1 class="flex-auto text-4xl p-2">
+            {{ ship.registration.name }}
+            <span class="text-sm">
+                ({{ ship.symbol }} {{ ship.registration.role }})
+                (<a class="hover:text-blue" [routerLink]="['/systems', ship.nav.systemSymbol, 'waypoints', ship.nav.waypointSymbol]">{{ ship.nav.waypointSymbol }}</a>)
+                ({{ ship.nav.status }})
+            </span>
+        </h1>
+        <ul class="flex">
+            <li><button class="p-2 border-2 border-teal hover:bg-gray-hover mx-2" (click)="move(ship)" *ngIf="ship.nav.status != navStatus.IN_TRANSIT">{{ ship.nav.status == navStatus.DOCKED ? 'Orbit' : 'Dock' }}</button></li>
+            <li><button class="p-2 border-2 border-teal hover:bg-gray-hover mx-2" (click)="transit(ship)" *ngIf="ship.nav.status == navStatus.IN_ORBIT" title="Move to waypoint">Tranit</button></li>
+            <li><button class="p-2 border-2 border-teal hover:bg-gray-hover mx-2" (click)="refuel(ship)" *ngIf="ship.nav.status == navStatus.DOCKED && ship.fuel.current != ship.fuel.capacity">Refuel</button></li>
         </ul>
     </div>
     <div>
-        <app-shipregistration [ship]="ship"></app-shipregistration>
-        <app-shipnavigation [ship]="ship"></app-shipnavigation>
+        <app-shipcrew [ship]="ship"></app-shipcrew>
         <app-shipcargo [ship]="ship"></app-shipcargo>
         <app-shipconfiguration [ship]="ship"></app-shipconfiguration>
-        <app-shipcargo [ship]="ship"></app-shipcargo>
     </div>
 </div>

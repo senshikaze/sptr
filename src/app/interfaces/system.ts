@@ -15,4 +15,5 @@ export interface System {
     factions: {
         symbol: string
     }[]
+    distance: number
 }

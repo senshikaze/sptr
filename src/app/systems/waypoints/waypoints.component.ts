@@ -1,14 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable, switchMap, map} from 'rxjs';
 import { ApiService } from 'src/app/api.service';
+import { WaypointsTraits } from 'src/app/enums/waypoints-traits';
 import { Waypoint } from 'src/app/interfaces/waypoint';
 
 @Component({
   selector: 'app-waypoints',
   templateUrl: './waypoints.component.html'
 })
-export class WaypointsComponent {
+export class WaypointsComponent implements OnInit {
   @Input() systemSymbol: string = '';
   waypoints$!: Observable<Waypoint[]>;
   limit: number = 20;

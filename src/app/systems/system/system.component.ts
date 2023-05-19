@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable, switchMap } from 'rxjs';
 import { ApiService } from 'src/app/api.service';
@@ -9,7 +9,7 @@ import { System } from 'src/app/interfaces/system';
   selector: 'app-system',
   templateUrl: './system.component.html'
 })
-export class SystemComponent {
+export class SystemComponent implements OnInit {
   systemType = Object.entries(SystemType).map(([key, value]) => ({key: key, value: value}));
 
   system$!: Observable<System>;

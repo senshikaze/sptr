@@ -4,9 +4,7 @@
             <tr>
                 <th class="px-4 text-left">Type</th>
                 <th class="px-4 text-left">Faction</th>
-                <th class="px-4 text-left">Payment on acceptance</th>
-                <th class="px-4 text-left">Payment on fulfillment</th>
-                <th class="px-4 text-left">Deliver</th>
+                <th class="px-4 text-left">Total Payment</th>
                 <th class="px-4 text-left">Accepted</th>
                 <th class="px-4 text-left">Fulfilled</th>
                 <th class="px-4 text-left">Expiration</th>
@@ -14,17 +12,13 @@
         </thead>
         <tbody>
             <tr class="odd:bg-gray-hover" *ngFor="let contract of contracts">
-                <td class="px-4 text-left"> {{ contract.type }}</td>
-                <td class="px-4 text-left"> {{ contract.factionSymbol }} </td>
-                <td class="px-4 text-left"> {{ contract.terms.payment.onAccepted | number : '1.0-0' }} c</td>
-                <td class="px-4 text-left"> {{ contract.terms.payment.onFulfilled | number : '1.0-0' }} c</td>
-                <td class="px-4 text-left"> {{ contract.accepted }} </td>
-                <td class="px-4 text-left"> {{ contract.fulfilled }} </td>
-                <td class="px-4 text-left"> {{ contract.expiration }} </td>
-                <td>
-                    <a class="border-2 border-teal p-2 m-2 bg-gray-dark hover:text-gray" [routerLink]="['/contracts', contract.id]">View</a>
-                    <button class="border-2 border-teal p-2 m-2 bg-gray-dark hover:text-gray" (click)="accept()">Accept</button>
-                </td>
+                <td class="px-4 text-left">{{ contract.type }}</td>
+                <td class="px-4 text-left">{{ contract.factionSymbol }}</td>
+                <td class="px-4 text-left" title="On Accepted: {{ contract.terms.payment.onAccepted | number : '1.0-0' }} c; On Fulfilled: {{ contract.terms.payment.onFulfilled | number : '1.0-0' }} c">{{ contract.terms.payment.onAccepted + contract.terms.payment.onFulfilled | number : '1.0-0' }} c</td>
+                <td class="px-4 text-left">{{ contract.accepted }}</td>
+                <td class="px-4 text-left">{{ contract.fulfilled }}</td>
+                <td class="px-4 text-left">{{ contract.expiration }}</td>
+                <td><a class="block border-2 border-teal p-2 m-2 bg-gray-dark hover:text-gray" [routerLink]="['/contracts', contract.id]">View</a></td>
             </tr>
         </tbody>
     </table>
