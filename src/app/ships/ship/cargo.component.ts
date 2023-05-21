@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { NavStatus } from 'src/app/enums/nav-status';
 import { Ship } from 'src/app/interfaces/ship';
 
 @Component({
@@ -16,9 +17,9 @@ import { Ship } from 'src/app/interfaces/ship';
             </thead>
             <tbody>
                 <tr class="odd:bg-gray-hover" *ngFor="let cargo of ship.cargo.inventory" title="{{ cargo.description }}">
-                    <td class="px-4 text-left">{{ cargo.name }}</td>
-                    <td class="px-4 text-left">{{ cargo.units }}</td>
-                    <td><button class="border-2 border-teal p-2 m-2 bg-gray-dark hover:text-gray" (click)="sell(cargo.symbol)">Sell</button></td>
+                    <td class="px-4 py-2 text-left">{{ cargo.name }}</td>
+                    <td class="px-4 py-2 text-left">{{ cargo.units }}</td>
+                    <td><button *ngIf="ship.nav.status == navStatus.DOCKED" class="border-2 border-teal p-2 m-2 bg-gray-dark hover:text-gray" (click)="sell(cargo.symbol)">Sell</button></td>
                 </tr>
             </tbody>
         </table>
@@ -29,6 +30,7 @@ import { Ship } from 'src/app/interfaces/ship';
   ]
 })
 export class ShipCargoComponent {
+  navStatus = NavStatus;
   @Input() ship!: Ship;
 
   sell(cargoSymbol: string) {

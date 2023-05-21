@@ -23,14 +23,19 @@ module.exports = {
     },
     extend: {
       animation: {
-        fadeOut: 'fadeOut 2s ease-out',
+        'fade-out': 'fadeOut 2s ease-out 5s',
+        'fade-in': 'fadeIn 2s ease-in',
       },
-      keyFrames: theme => ({
+      keyFrames: {
         fadeOut: {
-          '0%': {opacity: 1},
-          '100%': {opacity: 0}
+          '0%': { opacity: 1 },
+          '100%': { opacity: 0 }
         },
-      }),
+        fadeIn: {
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1 }
+        }
+      },
     },
   },
   plugins: [],

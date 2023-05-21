@@ -21,4 +21,6 @@
   <div class="p-2"><sub>&copy; 2023 Kaze Industries; GNU GPL v3; <a class="hover:text-blue" href="https://github.com/senshikaze/sptr">Github</a></sub></div>
 </div>
 <app-register *ngIf="!registered"></app-register>
-<app-error-message *ngIf="errorService.errored" [error]="errorService.error" (closeError)="errorService.setError(false, ''); registered=true;"></app-error-message>
+<div *ngIf="this.messageService.messages" class="flex-col p-2 w-3/5 fixed top-8 inset-x-0 mx-auto">
+  <app-message *ngFor="let message of this.messageService.messages" [message]="message"></app-message>
+</div>

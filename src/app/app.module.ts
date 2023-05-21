@@ -19,7 +19,6 @@ import { ShipNavigationComponent } from './ships/ship/navigation.component';
 import { ShipConfigurationComponent } from './ships/ship/configuration.component';
 import { ShipCrewComponent } from './ships/ship/crew.component';
 import { ShipCargoComponent } from './ships/ship/cargo.component';
-import { ErrorMessageComponent } from './misc/error-message.component';
 import { AgentHeaderComponent } from './agent-header/agent-header.component';
 import { AgentComponent } from './agent/agent.component';
 import { PaginatorComponent } from './misc/paginator/paginator.component';
@@ -28,7 +27,16 @@ import { LuxonRelativePipe } from './pipes/luxon-relative.pipe';
 import { ShipyardComponent } from './systems/waypoints/shipyard/shipyard.component';
 import { MarketplaceComponent } from './systems/waypoints/marketplace/marketplace.component';
 import { JumpGateComponent } from './systems/waypoints/jump-gate/jump-gate.component';
-import { TransitComponent } from './ships/ship/transit/transit.component';
+import { TransitComponent } from './ships/ship/actions/transit/transit.component';
+import { ModalDirectiveDirective } from './modal-directive.directive';
+import { ConditionPipe } from './pipes/condition.pipe';
+import { JoinTraitsPipe } from './pipes/join-traits.pipe';
+import { ShipStatusComponent } from './ships/ship/ship-status.component';
+import { ShipActionsComponent } from './ships/ship/ship-actions.component';
+import { MineComponent } from './ships/ship/actions/mine/mine.component';
+import { JoinPipe } from './pipes/join.pipe';
+import { JoinDepositsPipe } from './pipes/join-deposits.pipe';
+import { MessageComponent } from './misc/message.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +55,6 @@ import { TransitComponent } from './ships/ship/transit/transit.component';
     ShipConfigurationComponent,
     ShipCrewComponent,
     ShipCargoComponent,
-    ErrorMessageComponent,
     AgentHeaderComponent,
     AgentComponent,
     PaginatorComponent,
@@ -57,6 +64,15 @@ import { TransitComponent } from './ships/ship/transit/transit.component';
     MarketplaceComponent,
     JumpGateComponent,
     TransitComponent,
+    ModalDirectiveDirective,
+    ConditionPipe,
+    JoinTraitsPipe,
+    ShipStatusComponent,
+    ShipActionsComponent,
+    MineComponent,
+    JoinPipe,
+    JoinDepositsPipe,
+    MessageComponent,
   ],
   imports: [
     BrowserModule,

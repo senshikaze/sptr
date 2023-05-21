@@ -1,10 +1,10 @@
 <div *ngIf="waypoint$ | async as waypoint">
     <div class="mb-2 p-4 border-b-teal border-b-2 flex">
         <h1 class="flex-auto text-4xl p-2">{{ waypoint.symbol }} <span class="text-sm">(<a class="hover:text-blue" [routerLink]="['/systems', waypoint.systemSymbol]">{{ waypoint.systemSymbol }}</a>) ({{waypoint.type}}) (x:{{waypoint.x}} y:{{waypoint.y}})</span></h1>
-        <ul class="flex">
-            <li class="p-1 border-teal border-2 m-1" *ngFor="let trait of waypoint.traits">{{trait.name}}</li>
-        </ul>
     </div>
+    <ul class="flex mb-4 ml-4">
+        <li class="p-1 border-teal border-2 m-1 text-sm" *ngFor="let trait of waypoint.traits" title="{{trait.symbol}}">{{trait.name}}</li>
+    </ul>
     <app-shipyard *ngIf="hasTrait(traits.SHIPYARD, waypoint.traits)" [waypoint]="waypoint"></app-shipyard>
     <app-marketplace *ngIf="hasTrait(traits.MARKETPLACE, waypoint.traits)" [waypoint]="waypoint"></app-marketplace>
 </div>

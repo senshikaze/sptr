@@ -4,7 +4,7 @@ export interface Engine {
     symbol: string
     name: string
     description: string
-    condition: string
+    condition: number
     speed: string
     requirements: Requirements
 }

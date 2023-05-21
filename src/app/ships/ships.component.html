@@ -19,7 +19,7 @@
                 <td class="px-4 text-left">{{ ship.registration.role }}</td>
                 <td class="px-4 text-left">{{ ship.crew.current}} / {{ ship.crew.capacity }}</td>
                 <td class="px-4 text-left">{{ ship.frame.name }}</td>
-                <td class="px-4 text-left">{{ ship.nav.status }}</td>
+                <td class="px-4 text-left" title="{{ship.nav.status == navStatus.IN_TRANSIT ? (ship.nav.route.arrival | relativedate): ''}}">{{ ship.nav.status }}</td>
                 <td class="px-4 text-left"><a class="hover:text-blue" [routerLink]="['/systems', ship.nav.systemSymbol, 'waypoints', ship.nav.waypointSymbol]">{{ ship.nav.waypointSymbol }}</a></td>
                 <td class="px-4 text-left"><a class="hover:text-blue" [routerLink]="['/systems', ship.nav.systemSymbol]">{{ship.nav.systemSymbol }}</a></td>
                 <td class="px-4 text-left">{{ ship.cargo.units }} / {{ ship.cargo.capacity }}</td>

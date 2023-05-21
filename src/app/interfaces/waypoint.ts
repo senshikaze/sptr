@@ -1,4 +1,4 @@
-import { Faction } from "./faction"
+import { Trait } from "./trait"
 
 export interface Waypoint {
     symbol: string
@@ -12,11 +12,7 @@ export interface Waypoint {
     faction: { 
         symbol: string
     }
-    traits: {
-        symbol: string
-        name: string
-        description: string
-    }[]
+    traits: Trait[]
     chart: {
         waypointSybmol: string
         submittedBy: string

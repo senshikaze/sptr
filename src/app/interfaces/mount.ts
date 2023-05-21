@@ -5,6 +5,6 @@ export interface Mount {
     name: string
     description: string
     strength: number
-    deposits: Array<String>
+    deposits: Array<string>
     requirements: Requirements
 }

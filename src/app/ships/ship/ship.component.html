@@ -1,22 +1,21 @@
 <div class="p-2" *ngIf="( ship$ | async ) as ship">
     <div class="mb-2 p-4 border-b-teal border-b-2 flex">
-        <h1 class="flex-auto text-4xl p-2">
-            {{ ship.registration.name }}
-            <span class="text-sm">
-                ({{ ship.symbol }} {{ ship.registration.role }})
-                (<a class="hover:text-blue" [routerLink]="['/systems', ship.nav.systemSymbol, 'waypoints', ship.nav.waypointSymbol]">{{ ship.nav.waypointSymbol }}</a>)
-                ({{ ship.nav.status }})
-            </span>
+        <h1 class="text-4xl p-2" title="{{ ship.symbol }}">
+            {{ ship.registration.name }}<span class="text-sm">( {{ ship.registration.role }})</span>
         </h1>
-        <ul class="flex">
-            <li><button class="p-2 border-2 border-teal hover:bg-gray-hover mx-2" (click)="move(ship)" *ngIf="ship.nav.status != navStatus.IN_TRANSIT">{{ ship.nav.status == navStatus.DOCKED ? 'Orbit' : 'Dock' }}</button></li>
-            <li><button class="p-2 border-2 border-teal hover:bg-gray-hover mx-2" (click)="transit(ship)" *ngIf="ship.nav.status == navStatus.IN_ORBIT" title="Move to waypoint">Tranit</button></li>
-            <li><button class="p-2 border-2 border-teal hover:bg-gray-hover mx-2" (click)="refuel(ship)" *ngIf="ship.nav.status == navStatus.DOCKED && ship.fuel.current != ship.fuel.capacity">Refuel</button></li>
-        </ul>
+        <app-ship-status class="flex-auto text-center text-xl"  [ship]="ship"></app-ship-status>
+        <app-ship-actions [ship]="ship" (shipAction)="updateShip($event)"></app-ship-actions>
     </div>
     <div>
-        <app-shipcrew [ship]="ship"></app-shipcrew>
+        <div class="ml-4 mb-4">
+            <h2 class="text-2xl">Fuel</h2>
+            <ul class="mb-6">
+                <li>{{ ship.fuel.current }} / {{ ship.fuel.capacity }}</li>
+                <li *ngIf="ship.fuel.consumed.amount > 0">Recent Consumption: {{ ship.fuel.consumed.amount }} ({{ ship.fuel.consumed.timestamp }})</li>
+            </ul>
+        </div>
         <app-shipcargo [ship]="ship"></app-shipcargo>
+        <app-shipcrew [ship]="ship"></app-shipcrew>
         <app-shipconfiguration [ship]="ship"></app-shipconfiguration>
     </div>
 </div>

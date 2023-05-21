@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from './api.service';
-import { ErrorService } from './error.service';
+import { MessageService } from './message.service';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +10,7 @@ export class AppComponent implements OnInit {
   registered: boolean = false;
   title = 'Space Trader';
 
-  constructor(private api: ApiService, public errorService: ErrorService) { }
+  constructor(private api: ApiService, public messageService: MessageService) { }
 
   ngOnInit() {
     this.registered = this.api.authenticated();

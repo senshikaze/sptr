@@ -1,6 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable, Subject, map, takeUntil } from 'rxjs';
 import { ApiService } from 'src/app/api.service';
+import { PurchaseShip } from 'src/app/interfaces/purchase-ship';
 import { ShipYard } from 'src/app/interfaces/ship-yard';
 import { Waypoint } from 'src/app/interfaces/waypoint';
 
@@ -29,12 +31,13 @@ import { Waypoint } from 'src/app/interfaces/waypoint';
     </div>
   `
 })
-export class ShipyardComponent implements OnInit {
+export class ShipyardComponent implements OnInit, OnDestroy {
   @Input() waypoint!: Waypoint;
 
   shipyard$!: Observable<ShipYard>;
+  private destroy$: Subject<boolean> = new Subject<boolean>();
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private router: Router) {}
 
   ngOnInit() {
     this.shipyard$ = this.api.get<ShipYard>(
@@ -44,7 +47,23 @@ export class ShipyardComponent implements OnInit {
     );
   }
 
-  buy(shipType: string) {
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
 
+  buy(shipType: string) {
+    this.api.post<PurchaseShip>(
+      `my/ships`,
+      {
+        'shipType': shipType,
+        'waypointSymbol': this.waypoint.symbol
+      }
+    ).pipe(
+      takeUntil(this.destroy$),
+      map(response => response.data)
+    ).subscribe(
+      purchase => this.router.navigate(['/ships', purchase.ship.symbol])
+    );
   }
 }
