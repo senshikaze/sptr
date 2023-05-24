@@ -1,10 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subject, map, takeUntil } from 'rxjs';
-import { ApiService } from 'src/app/api.service';
+import { ApiService } from 'src/app/services/api.service';
 import { PurchaseShip } from 'src/app/interfaces/purchase-ship';
 import { ShipYard } from 'src/app/interfaces/ship-yard';
 import { Waypoint } from 'src/app/interfaces/waypoint';
+import { Ship } from 'src/app/interfaces/ship';
 
 @Component({
   selector: 'app-shipyard',
@@ -33,6 +34,7 @@ import { Waypoint } from 'src/app/interfaces/waypoint';
 })
 export class ShipyardComponent implements OnInit, OnDestroy {
   @Input() waypoint!: Waypoint;
+  @Input() ships$!: Observable<Ship[]>;
 
   shipyard$!: Observable<ShipYard>;
   private destroy$: Subject<boolean> = new Subject<boolean>();

@@ -4,16 +4,10 @@
             {{ ship.registration.name }}<span class="text-sm">( {{ ship.registration.role }})</span>
         </h1>
         <app-ship-status class="flex-auto text-center text-xl"  [ship]="ship"></app-ship-status>
-        <app-ship-actions [ship]="ship" (shipAction)="updateShip($event)"></app-ship-actions>
+        <app-ship-actions [ship]="ship" (updateShip)="updateShip($event)"></app-ship-actions>
     </div>
     <div>
-        <div class="ml-4 mb-4">
-            <h2 class="text-2xl">Fuel</h2>
-            <ul class="mb-6">
-                <li>{{ ship.fuel.current }} / {{ ship.fuel.capacity }}</li>
-                <li *ngIf="ship.fuel.consumed.amount > 0">Recent Consumption: {{ ship.fuel.consumed.amount }} ({{ ship.fuel.consumed.timestamp }})</li>
-            </ul>
-        </div>
+        <app-fuel [ship]="ship"></app-fuel>
         <app-shipcargo [ship]="ship"></app-shipcargo>
         <app-shipcrew [ship]="ship"></app-shipcrew>
         <app-shipconfiguration [ship]="ship"></app-shipconfiguration>

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ApiService } from '../api.service';
+import { ApiService } from '../services/api.service';
 import { ActivatedRoute} from '@angular/router';
 import { Contract } from '../interfaces/contract';
 import { Observable, Subject, takeUntil } from 'rxjs';

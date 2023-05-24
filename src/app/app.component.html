@@ -7,9 +7,9 @@
     </div>
     <nav class="p-2">
       <ul class="flex">
-        <li><a routerLink="/ships" class="mr-6 hover:text-blue">Ships</a></li>
-        <li><a routerLink="/systems" class="mr-6 hover:text-blue">Systems</a></li>
-        <li><a routerLink="/contracts" class="mr-6 hover:text-blue">Contracts</a></li>
+        <li><a routerLink="/ships" class="mr-6 hover:text-blue" routerLinkActive="bg-gray">Ships</a></li>
+        <li><a routerLink="/systems" class="mr-6 hover:text-blue" routerLinkActive="bg-gray">Systems</a></li>
+        <li><a routerLink="/contracts" class="mr-6 hover:text-blue" routerLinkActive="bg-gray">Contracts</a></li>
       </ul>
     </nav>
   </div>
@@ -21,6 +21,7 @@
   <div class="p-2"><sub>&copy; 2023 Kaze Industries; GNU GPL v3; <a class="hover:text-blue" href="https://github.com/senshikaze/sptr">Github</a></sub></div>
 </div>
 <app-register *ngIf="!registered"></app-register>
-<div *ngIf="this.messageService.messages" class="flex-col p-2 w-3/5 fixed top-8 inset-x-0 mx-auto">
+<div *ngIf="this.messageService.messages" class="flex-col p-2 w-3/5 fixed top-8 inset-x-0 mx-auto z-50">
   <app-message *ngFor="let message of this.messageService.messages" [message]="message"></app-message>
 </div>
+<app-modal class="z-30"></app-modal>

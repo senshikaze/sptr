@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { ApiService } from 'src/app/api.service';
+import { ApiService } from 'src/app/services/api.service';
 import { JumpGate } from 'src/app/interfaces/jump-gate';
 import { Waypoint } from 'src/app/interfaces/waypoint';
 

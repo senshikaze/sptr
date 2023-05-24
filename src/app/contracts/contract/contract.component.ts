@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, map, switchMap, takeUntil } from 'rxjs';
 import { ParamMap } from '@angular/router';
-import { ApiService } from 'src/app/api.service';
+import { ApiService } from 'src/app/services/api.service';
 import { Contract } from 'src/app/interfaces/contract';
 import { Ship } from 'src/app/interfaces/ship';
 import { ContractDelivery } from 'src/app/interfaces/contract-delivery';

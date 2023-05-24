@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { ApiService } from 'src/app/api.service';
+import { ApiService } from 'src/app/services/api.service';
 import { Marketplace } from 'src/app/interfaces/marketplace';
 import { Waypoint } from 'src/app/interfaces/waypoint';
+import { Ship } from 'src/app/interfaces/ship';
 
 @Component({
   selector: 'app-marketplace',
@@ -38,6 +39,7 @@ import { Waypoint } from 'src/app/interfaces/waypoint';
 })
 export class MarketplaceComponent implements OnInit {
   @Input() waypoint!: Waypoint;
+  @Input() ships$!: Observable<Ship[]>;
 
   marketplace$!: Observable<Marketplace>;
 

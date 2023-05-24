@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { timer, Observable, Subject, takeUntil, repeat} from 'rxjs';
-import { ApiService } from '../api.service';
+import { ApiService } from '../services/api.service';
 import { Agent } from '../interfaces/agent';
 import { Contract } from '../interfaces/contract';
 import { Router } from '@angular/router';

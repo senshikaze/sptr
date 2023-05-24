@@ -13,7 +13,7 @@ export interface Waypoint {
         symbol: string
     }
     traits: Trait[]
-    chart: {
+    chart?: {
         waypointSybmol: string
         submittedBy: string
         submittedOn: string

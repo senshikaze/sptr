@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { DateTime } from 'luxon';
+import { DateTime, Duration } from 'luxon';
 import { Subject, interval, takeUntil, timeInterval, timer } from 'rxjs';
 import { NavStatus } from 'src/app/enums/nav-status';
 import { Ship } from 'src/app/interfaces/ship';
@@ -14,7 +14,7 @@ import { Ship } from 'src/app/interfaces/ship';
       Orbiting <a class="hover:text-blue underline" [routerLink]="['/systems', ship.nav.systemSymbol, 'waypoints', ship.nav.waypointSymbol]">{{ ship.nav.waypointSymbol }}</a>
     </span>
     <span *ngIf="ship.nav.status == navStatus.IN_TRANSIT">
-      In Transit to <a class="hover:text-blue underline" [routerLink]="['/systems', ship.nav.route.destination.systemSymbol, 'waypoints', ship.nav.route.destination.symbol]">{{ ship.nav.route.destination.symbol }}</a> | Estimated Arrival: <span title="{{ ship.nav.route.arrival | formatdate }}">{{ ship.nav.route.arrival | relativedate }}...</span>
+      In Transit to <a class="hover:text-blue underline" [routerLink]="['/systems', ship.nav.route.destination.systemSymbol, 'waypoints', ship.nav.route.destination.symbol]">{{ ship.nav.route.destination.symbol }}</a> | Estimated Arrival: <span title="{{ ship.nav.route.arrival | formatdate }}">{{ this.arrival | relativedate }}...</span>
     </span>
   `,
   styles: [
@@ -24,6 +24,8 @@ export class ShipStatusComponent implements OnInit, OnDestroy {
   navStatus = NavStatus;
   @Input() ship!: Ship;
 
+  arrival!: string;
+
   private destroy$: Subject<boolean> = new Subject<boolean>();
 
   ngOnInit(): void {
@@ -32,9 +34,7 @@ export class ShipStatusComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       ).subscribe(
         _ => {
-          let arrival = DateTime.fromISO(this.ship.nav.route.arrival);
-          let now = DateTime.now()
-          this.ship.nav.route.arrival = arrival.diff(now, 'seconds').toISO() ?? this.ship.nav.route.arrival;
+          this.arrival = DateTime.fromISO(this.ship.nav.route.arrival).diff(DateTime.now()).toISO() ?? this.ship.nav.route.arrival;
         }
       )
     }

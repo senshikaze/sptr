@@ -1,4 +1,4 @@
-import { ModalDirectiveDirective } from './modal-directive.directive';
+import { ModalDirectiveDirective } from './modal.directive';
 
 describe('ModalDirectiveDirective', () => {
   it('should create an instance', () => {

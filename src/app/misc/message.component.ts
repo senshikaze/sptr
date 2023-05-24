@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { MessageService } from '../message.service';
+import { MessageService } from '../services/message.service';
 import { timer } from 'rxjs';
 import { Message } from '../interfaces/message';
 import { MessageType } from '../enums/message-type';
@@ -7,7 +7,7 @@ import { MessageType } from '../enums/message-type';
 @Component({
   selector: 'app-message',
   template: `
-    <div class="relative flex p-2 border-2  mb-2" [ngClass]="class">  
+    <div class="relative flex p-2 border-2 mb-2 -z-50" [ngClass]="class">  
       <p class="flex-auto">{{ message.message }}</p>
       <span class="float-right hover:cursor-pointer" (click)="close(message)">X</span>
     </div>

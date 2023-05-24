@@ -2,19 +2,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, ObservableInput, of, throwError, timer } from 'rxjs';
 import { catchError, map, retry, take } from 'rxjs/operators';
-import { Ship } from './interfaces/ship';
-import { Agent } from './interfaces/agent';
-import { Response } from './interfaces/response';
-import { Waypoint } from './interfaces/waypoint';
-import { System } from './interfaces/system';
-import { Register } from './interfaces/register';
-import { Contract } from './interfaces/contract';
+import { Ship } from '../interfaces/ship';
+import { Agent } from '../interfaces/agent';
+import { Response } from '../interfaces/response';
+import { Waypoint } from '../interfaces/waypoint';
+import { System } from '../interfaces/system';
+import { Register } from '../interfaces/register';
+import { Contract } from '../interfaces/contract';
 import { DateTime } from 'luxon';
 import { Router } from '@angular/router';
-import { Survey } from './interfaces/survey';
-import { SurveyAction } from './interfaces/survey-action';
+import { Survey } from '../interfaces/survey';
+import { SurveyAction } from '../interfaces/survey-action';
 import { MessageService } from './message.service';
-import { MessageType } from './enums/message-type';
+import { MessageType } from '../enums/message-type';
 
 const URL = "https://api.spacetraders.io/v2";
 
@@ -45,21 +45,21 @@ export class ApiService {
   handleError(error: HttpErrorResponse): Observable<never> {
     if (error.status === 0) {
       console.error("An error occored:", error.error);
-    } else {
-      let message = error.error.error.message
-      if (error.status == 401) {
-        // something broke with the api token, set a better message
-        // and delete the existing access code
-        localStorage.removeItem('accessCode');
-        message = "Access Code was invalid, please reregister.";
-        timer(3500).subscribe(
-          _ => this.router.navigate(['/'])
-        )
-      }
-
-      this.messageService.addMessage(message, MessageType.ERROR);
+      return throwError(() => new Error('Something bad happened.'));
     }
-    return throwError(() => new Error('Something bad happened.'));
+    let message = error.error.error.message
+    if (error.status == 401) {
+      // something broke with the api token, set a better message
+      // and delete the existing access code
+      localStorage.removeItem('accessCode');
+      message = "Access Code was invalid, please reregister.";
+      timer(3500).subscribe(
+        _ => this.router.navigate(['/'])
+      )
+    }
+
+    this.messageService.addMessage(message, MessageType.ERROR);
+    return of<never>();
   }
 
   getAccessCode(): string | null {

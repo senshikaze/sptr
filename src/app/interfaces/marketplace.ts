@@ -1,20 +1,12 @@
 import { Good } from "./good"
+import { Transaction } from "./transaction"
 
 export interface Marketplace {
     symbol: string
     exports: Good[]
     imports: Good[]
     exchange: Good[]
-    transactions: {
-        waypointSymbol: string
-        shipSymbol: string
-        tradeSymbol: string
-        type: string
-        units: number
-        pricePerUnit: number
-        totalPrice: number
-        timestamp: string
-    }[]
+    transactions: Transaction[]
     tradeGoods: {
         symbol: string
         tradeVolume: number

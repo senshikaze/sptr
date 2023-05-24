@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable, Subject, repeat, switchMap } from 'rxjs';
-import { ApiService } from 'src/app/api.service';
+import { ApiService } from 'src/app/services/api.service';
 import { Ship } from 'src/app/interfaces/ship';
 import { NavStatus } from 'src/app/enums/nav-status';
 import { Survey } from 'src/app/interfaces/survey';
@@ -36,9 +36,7 @@ export class ShipComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
-  updateShip(action: {ship: Ship, optional?:{surveys?:Survey[]}}): void {
-    if (action.ship) {
-      this.ship$ = this.api.getShip(action.ship.symbol);
-    }
+  updateShip(ship: Ship): void {
+    this.ship$ = this.api.getShip(ship.symbol);
   }
 }

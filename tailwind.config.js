@@ -20,6 +20,7 @@ module.exports = {
       'light-red': '#de4567',
       'dark-red': '#982334',
       'gray-hover': '#344354',
+      'red': '#af3237',
     },
     extend: {
       animation: {

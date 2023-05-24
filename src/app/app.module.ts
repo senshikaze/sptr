@@ -28,7 +28,7 @@ import { ShipyardComponent } from './systems/waypoints/shipyard/shipyard.compone
 import { MarketplaceComponent } from './systems/waypoints/marketplace/marketplace.component';
 import { JumpGateComponent } from './systems/waypoints/jump-gate/jump-gate.component';
 import { TransitComponent } from './ships/ship/actions/transit/transit.component';
-import { ModalDirectiveDirective } from './modal-directive.directive';
+import { ModalDirective } from './modal.directive';
 import { ConditionPipe } from './pipes/condition.pipe';
 import { JoinTraitsPipe } from './pipes/join-traits.pipe';
 import { ShipStatusComponent } from './ships/ship/ship-status.component';
@@ -37,6 +37,12 @@ import { MineComponent } from './ships/ship/actions/mine/mine.component';
 import { JoinPipe } from './pipes/join.pipe';
 import { JoinDepositsPipe } from './pipes/join-deposits.pipe';
 import { MessageComponent } from './misc/message.component';
+import { SellComponent } from './ships/ship/actions/sell/sell.component';
+import { JumpComponent } from './ships/ship/actions/jump/jump.component';
+import { FuelComponent } from './ships/ship/fuel.component';
+import { ModalComponent } from './misc/modal/modal.component';
+import { InRangePipe } from './pipes/in-range.pipe';
+import { DistancePipe } from './pipes/distance.pipe';
 
 @NgModule({
   declarations: [
@@ -64,7 +70,7 @@ import { MessageComponent } from './misc/message.component';
     MarketplaceComponent,
     JumpGateComponent,
     TransitComponent,
-    ModalDirectiveDirective,
+    ModalDirective,
     ConditionPipe,
     JoinTraitsPipe,
     ShipStatusComponent,
@@ -73,6 +79,12 @@ import { MessageComponent } from './misc/message.component';
     JoinPipe,
     JoinDepositsPipe,
     MessageComponent,
+    SellComponent,
+    JumpComponent,
+    FuelComponent,
+    ModalComponent,
+    InRangePipe,
+    DistancePipe,
   ],
   imports: [
     BrowserModule,
