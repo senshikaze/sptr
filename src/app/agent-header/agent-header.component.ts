@@ -42,18 +42,18 @@ export class AgentHeaderComponent implements OnInit, OnDestroy {
     );
 
     // Get only accepted contracts
-    this.api.getContracts("accepted").pipe(
+    this.api.getContracts().pipe(
       takeUntil(this.destroy$),
       repeat({delay: 30000})
     ).subscribe(
-      contracts => this.contractsSubject$.next(contracts)
+      contracts => this.contractsSubject$.next(contracts.data.filter(c => c.accepted == true))
     );
   
     this.api.getShips().pipe(
       takeUntil(this.destroy$),
       repeat({delay: 30000})
     ).subscribe(
-      ships => this.shipsSubject$.next(ships)
+      ships => this.shipsSubject$.next(ships.data)
     );
   }
 

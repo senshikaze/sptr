@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DateTime, Duration } from 'luxon';
 import { Subject, interval, takeUntil, timeInterval, timer } from 'rxjs';
 import { NavStatus } from 'src/app/enums/nav-status';
@@ -23,6 +23,7 @@ import { Ship } from 'src/app/interfaces/ship';
 export class ShipStatusComponent implements OnInit, OnDestroy {
   navStatus = NavStatus;
   @Input() ship!: Ship;
+  @Output() updateShip: EventEmitter<Ship> = new EventEmitter<Ship>();
 
   arrival!: string;
 
@@ -34,7 +35,12 @@ export class ShipStatusComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       ).subscribe(
         _ => {
-          this.arrival = DateTime.fromISO(this.ship.nav.route.arrival).diff(DateTime.now()).toISO() ?? this.ship.nav.route.arrival;
+          let arrival = DateTime.fromISO(this.ship.nav.route.arrival)
+          let now = DateTime.now();
+          if (now >= arrival) {
+            this.updateShip.emit(this.ship);
+          }
+          this.arrival = arrival.diff(now).toISO() ?? this.ship.nav.route.arrival;
         }
       )
     }

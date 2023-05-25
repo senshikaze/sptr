@@ -5,7 +5,7 @@ import { Ship } from 'src/app/interfaces/ship';
   selector: 'app-shipcrew',
   template: `
   <div class="ml-4 mb-4">
-    <h2 class="text-2xl cursor-pointer" (click)="toggleShow()">Crew {{show ? "⌄" : ">"}}</h2>
+    <h2 class="text-xl cursor-pointer" (click)="toggleShow()">Crew {{show ? "⌄" : ">"}}</h2>
     <div *ngIf="show">
     <div class="" *ngIf="ship.crew.required == 0; else elseBlock">
       <h2 class="text-base">Not Applicable</h2>

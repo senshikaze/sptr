@@ -4,7 +4,7 @@ import { MessageService } from 'src/app/services/message.service';
 import { Inventory } from 'src/app/interfaces/inventory';
 import { Ship } from 'src/app/interfaces/ship';
 import { SellCargo } from 'src/app/interfaces/sell-cargo';
-import { Subject, map, takeUntil } from 'rxjs';
+import { Subject, map, take, takeUntil } from 'rxjs';
 import { MessageType } from 'src/app/enums/message-type';
 import { ModalInterface } from 'src/app/interfaces/modal-interface';
 
@@ -12,7 +12,7 @@ import { ModalInterface } from 'src/app/interfaces/modal-interface';
   selector: 'app-shipsell',
   template: `
     <div class="fixed min-h-screen min-w-screen inset-0 bg-opacity-80 bg-gray-dark backdrop-blur-sm" *ngIf="data.ship && data.inventory" (click)="closeEvent.emit(true)">
-      <div class="w-96 border-2 border-teal mx-auto my-44 p-8 bg-gray-dark" (click)="$event.stopPropagation()">
+      <div class="relative w-96 border-2 border-teal mx-auto my-44 p-8 bg-gray-dark" (click)="$event.stopPropagation()">
         <div class="mb-8">  
           <h2 class="text-xl">Sell Units:</h2>
           <input class="p-2 text-black" type="number" min="0" max="{{data.inventory?.units ?? 0}}" [value]="units">
@@ -26,14 +26,13 @@ import { ModalInterface } from 'src/app/interfaces/modal-interface';
   `
 })
 export class SellComponent implements OnInit, OnDestroy, ModalInterface {
-  data!: any;
-
-  private destroy$: Subject<boolean> = new Subject<boolean>();
-
-  units: number = 0;
-
   @Output() closeEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() updateShip: EventEmitter<Ship> = new EventEmitter<Ship>();
+
+  data!: any;
+  units: number = 0;
+
+  private destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(private api: ApiService, public messageService: MessageService) {}
   ngOnInit(): void {
@@ -51,15 +50,8 @@ export class SellComponent implements OnInit, OnDestroy, ModalInterface {
 
   sell(ship: Ship, inventory: Inventory) {
     if (this.units > 0 && inventory) {
-      this.api.post<SellCargo>(
-        `my/ships/${ship.symbol}/sell`,
-        {
-          'symbol': inventory.symbol,
-          'units': this.units
-        }
-      ).pipe(
-        takeUntil(this.destroy$),
-        map(response => response.data)
+      this.api.postSellCargo(ship, inventory, this.units).pipe(
+        take(1)
       ).subscribe(transaction => {
         this.messageService.addMessage(
           `Sold ${transaction.transaction.units} ${transaction.transaction.tradeSymbol} for ${transaction.transaction.totalPrice} c`,

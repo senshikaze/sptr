@@ -13,12 +13,13 @@ import { MessageType } from 'src/app/enums/message-type';
   selector: 'app-shiptransit',
   template: `
     <div class="fixed min-h-screen min-w-screen inset-0 bg-opacity-80 bg-gray-dark backdrop-blur-sm" *ngIf="data.ship" (click)="closeEvent.emit(true)">
-      <div class="w-96 border-2 border-teal mx-auto my-44 p-8 bg-gray-dark" (click)="$event.stopPropagation()">
+      <div class="relative w-96 border-2 border-teal mx-auto my-44 p-8 bg-gray-dark" (click)="$event.stopPropagation()">
         <div class="mb-8">  
-          <h2 class="text-xl">Select Waypoint</h2>
+          <h2 class="text-xl mb-2">Transit to Waypoint:</h2>
           <ul *ngIf="waypoints$ | async as waypoints">
             <li class="px-4 cursor-pointer odd:bg-gray-hover" *ngFor="let waypoint of waypoints" (click)="startTransit(data.ship, waypoint)" title="{{waypoint.traits | joinTraits}}">{{waypoint.symbol}} ({{waypoint.type}})</li>
           </ul>
+          <app-paginator [page]="page" [limit]="limit" [total]="total"></app-paginator>
         </div>
         <button class="absolute right-2 bottom-2 border-2 border-teal p-2 m-2 bg-gray-dark hover:text-gray" (click)="this.closeEvent.emit(true)">Cancel</button>
       </div>
@@ -32,15 +33,22 @@ export class TransitComponent implements OnInit, OnDestroy, ModalInterface {
   data!: any;
 
   waypoints$!: Observable<Waypoint[]>;
+
+  page = 1;
+  limit = 20;
+  total = 0;
+
   private destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(private api: ApiService, public messageService: MessageService) {}
 
   ngOnInit(): void {
     if (this.data.ship) {
-      // TODO handle more than 20 waypoints in a system
-      this.waypoints$ = this.api.getWaypoints(this.data.ship.nav.systemSymbol).pipe(
-        map(response => response.data)
+      this.waypoints$ = this.api.getWaypoints(this.data.ship.nav.systemSymbol, this.limit, this.page).pipe(
+        map(response => {
+          this.total = response.meta.total;
+          return response.data.filter(w => w.symbol != this.data.ship.nav.waypointSymbol);
+        })
       );
     }
   }

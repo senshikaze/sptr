@@ -50,6 +50,7 @@ const routes: Routes = [
     ],
     title: "Contracts"
   },
+  {path: 'waypoints/:waypointSymbol', component: WaypointComponent},
   {path: 'agent', component: AgentComponent, title: "My Agent"},
   {path: '**', component: AgentComponent}
 ];

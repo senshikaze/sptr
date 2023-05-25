@@ -13,7 +13,7 @@ import { Survey } from 'src/app/interfaces/survey';
   selector: 'app-shipmine',
   template: `
     <div class="fixed min-h-screen min-w-screen inset-0 bg-opacity-80 bg-gray-dark backdrop-blur-sm" *ngIf="data.ship" (click)="closeEvent.emit(true)">
-      <div class="w-96 border-2 border-teal m-auto p-8 bg-gray-dark" (click)="$event.stopPropagation()">
+      <div class="relative w-96 border-2 border-teal mx-auto my-44 p-8 bg-gray-dark" (click)="$event.stopPropagation()">
         <div class="mb-8">  
           <h2 class="text-xl">Select Survey:</h2>
           <ul *ngIf="surveys$ | async as surveys">

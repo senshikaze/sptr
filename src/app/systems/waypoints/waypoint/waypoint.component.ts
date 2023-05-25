@@ -38,9 +38,15 @@ export class WaypointComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.waypoint$ = this.router.paramMap.pipe(
-      switchMap((params: ParamMap) => this.api.getWaypoint(
-        params.get('systemSymbol')!, params.get('waypointSymbol')!
-      ))
+      switchMap((params: ParamMap) => {
+        let systemSymbol = params.get('systemSymbol');
+        let waypointSymbol = params.get('waypointSymbol');
+        if (systemSymbol == null) {
+          // Get the system from the waypoint
+          systemSymbol = this.getSystemSymbol(waypointSymbol!);
+        }
+        return this.api.getWaypoint(systemSymbol, waypointSymbol!);
+      })
     );
 
     // TODO pagination
@@ -49,7 +55,7 @@ export class WaypointComponent implements OnInit, OnDestroy {
     ).subscribe(
       waypoint => {
         this.shipsAt$ = this.api.getShips(20, 1).pipe(
-          map(ships => ships.filter(s => s.nav.waypointSymbol == waypoint.symbol))
+          map(response => response.data.filter(s => s.nav.waypointSymbol == waypoint.symbol))
         );
       }
     );
@@ -62,5 +68,13 @@ export class WaypointComponent implements OnInit, OnDestroy {
 
   hasTrait(trait: WaypointsTraits, traits: any[]): boolean {
     return Boolean(traits.filter(t => trait.toString() == t.symbol).length)
+  }
+
+  getSystemSymbol(waypointSymbol: string): string {
+    // Changes X1-VS75-70500X into X1-VS75
+    // TODO: this may change.
+    // there is some effort happening to change
+    // the semantic meaning of systems and waypoints
+    return waypointSymbol.split('-').slice(0,2).join('-');
   }
 }

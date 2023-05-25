@@ -1,10 +1,9 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { DateTime } from 'luxon';
-import { Observable, Subject, map, takeUntil } from 'rxjs';
+import { Observable, Subject, map, take, takeUntil } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { MessageService } from 'src/app/services/message.service';
 import { MessageType } from 'src/app/enums/message-type';
-import { JumpAction } from 'src/app/interfaces/jump-action';
 import { ModalInterface } from 'src/app/interfaces/modal-interface';
 import { Ship } from 'src/app/interfaces/ship';
 import { System } from 'src/app/interfaces/system';
@@ -17,7 +16,7 @@ import { ModuleSymbols } from 'src/app/enums/module-symbols';
   selector: 'app-jump',
   template: `
     <div class="fixed min-h-full min-w-full inset-0 bg-opacity-80 bg-gray-dark backdrop-blur-sm" (click)="closeEvent.emit(true)">
-      <div class="relative w-3/12 border-2 border-teal mx-auto my-32 p-8 bg-gray-dark max-h-1/2 overflow-scroll" (click)="$event.stopPropagation()" *ngIf="data.ship && systemsShip$ | async as systemShip">
+      <div class="relative w-3/12 h-5/6 border-2 border-teal mx-auto my-32 p-8 bg-gray-dark max-h-1/2 overflow-scroll" (click)="$event.stopPropagation()" *ngIf="data.ship && systemsShip$ | async as systemShip">
         <div class="mb-8" *ngIf="systems$ | async as systems">
           <h2 class="text-xl">Select System to start Jump</h2>
           <ul>
@@ -108,14 +107,8 @@ export class JumpComponent implements OnInit, OnDestroy, ModalInterface {
   }
 
   jump(ship: Ship, systemSymbol: string): void {
-    this.api.post<JumpAction>(
-      `my/ships/${ship.symbol}/jump`,
-      {
-        'systemSymbol': systemSymbol
-      }
-    ).pipe(
-      takeUntil(this.destroy$),
-      map(response => response.data)
+    this.api.postJump(ship, systemSymbol).pipe(
+      take(1)
     ).subscribe(
       jumpAction => {
         this.messageService.addMessage(

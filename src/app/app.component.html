@@ -1,15 +1,15 @@
 <div class="flex flex-col min-h-screen">
-  <div class="border-b-2 border-b-teal mb-2">
+  <div class="mb-2 border-b-2 border-b-teal">
     <div class="flex flex-row">
-      <h2 class="p-8 text-4xl">Space Trading</h2>
+      <h2 class="p-8 text-3xl">Space Trading</h2>
       <span class="flex-auto"></span>
       <app-agent-header></app-agent-header>
     </div>
-    <nav class="p-2">
+    <nav>
       <ul class="flex">
-        <li><a routerLink="/ships" class="mr-6 hover:text-blue" routerLinkActive="bg-gray">Ships</a></li>
-        <li><a routerLink="/systems" class="mr-6 hover:text-blue" routerLinkActive="bg-gray">Systems</a></li>
-        <li><a routerLink="/contracts" class="mr-6 hover:text-blue" routerLinkActive="bg-gray">Contracts</a></li>
+        <li><a class="p-3 bg-gradient-to-t from-teal/30 to-gray-dark hover:text-gray-dark hover:from-teal block" routerLinkActive="!from-teal/90 hover:!text-gray" routerLink="/ships">Ships</a></li>
+        <li><a class="p-3 bg-gradient-to-t from-teal/30 to-gray-dark hover:text-gray-dark hover:from-teal block" routerLinkActive="!from-teal"routerLink="/systems">Systems</a></li>
+        <li><a class="p-3 bg-gradient-to-t from-teal/30 to-gray-dark hover:text-gray-dark hover:from-teal block" routerLinkActive="!from-teal"routerLink="/contracts">Contracts</a></li>
       </ul>
     </nav>
   </div>

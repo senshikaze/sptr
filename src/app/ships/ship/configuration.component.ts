@@ -5,7 +5,7 @@ import { Ship } from 'src/app/interfaces/ship';
   selector: 'app-shipconfiguration',
   template: `
   <div class="ml-4 mb-4">
-    <h2 class="text-2xl cursor-pointer" (click)="toggleShow()">Configuration {{show ? "⌄" : ">"}}</h2>
+    <h2 class="text-xl cursor-pointer" (click)="toggleShow()">Configuration {{show ? "⌄" : ">"}}</h2>
     <div *ngIf="show">
     <div class="mb-2">
         <h2 class="text-xl">{{ ship.frame.name }} <span class="text-xs">({{ship.frame.symbol}})</span></h2>

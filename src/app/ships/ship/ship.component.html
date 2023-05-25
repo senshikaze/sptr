@@ -4,10 +4,14 @@
             {{ ship.registration.name }}<span class="text-sm">( {{ ship.registration.role }})</span>
         </h1>
         <app-ship-status class="flex-auto text-center text-xl"  [ship]="ship"></app-ship-status>
-        <app-ship-actions [ship]="ship" (updateShip)="updateShip($event)"></app-ship-actions>
+        <app-ship-move-actions [ship]="ship" [jumpGateWaypoint]="jumpGateWaypoint" (updateShip)="updateShip($event)"></app-ship-move-actions>
     </div>
     <div>
-        <app-fuel [ship]="ship"></app-fuel>
+        <app-fuel [ship]="ship" [marketplaceWaypoint]="marketplaceWaypoint" (updateShip)="updateShip($event)"></app-fuel>
+        <div class="m-4">
+            <h2 class="text-xl">Actions</h2>
+            <app-ship-actions [ship]="ship" [marketplaceWaypoint]="marketplaceWaypoint" [miningWaypoint]="miningWaypoint" (updateShip)="updateShip($event)"></app-ship-actions>
+        </div>
         <app-shipcargo [ship]="ship"></app-shipcargo>
         <app-shipcrew [ship]="ship"></app-shipcrew>
         <app-shipconfiguration [ship]="ship"></app-shipconfiguration>

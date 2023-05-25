@@ -43,6 +43,7 @@ import { FuelComponent } from './ships/ship/fuel.component';
 import { ModalComponent } from './misc/modal/modal.component';
 import { InRangePipe } from './pipes/in-range.pipe';
 import { DistancePipe } from './pipes/distance.pipe';
+import { ShipMoveActionsComponent } from './ships/ship/ship-move-actions.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +86,7 @@ import { DistancePipe } from './pipes/distance.pipe';
     ModalComponent,
     InRangePipe,
     DistancePipe,
+    ShipMoveActionsComponent,
   ],
   imports: [
     BrowserModule,
