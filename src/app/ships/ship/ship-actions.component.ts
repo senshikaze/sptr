@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Observable, Subject, map, of, take, takeUntil } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { MessageService } from 'src/app/services/message.service';
@@ -20,12 +20,11 @@ import { ScanWaypoints } from 'src/app/interfaces/scan-waypoints';
     <ul class="flex">
       <li><button class="p-2 border-2 border-teal hover:bg-gray-hover mx-2" (click)="action('scan', {scanType: 'systems'})" *ngIf="orbiting && canScan" title="Scan Systems">Scan Systems</button></li>
       <li><button class="p-2 border-2 border-teal hover:bg-gray-hover mx-2" (click)="action('scan', {scanType: 'waypoints'})" *ngIf="(docked || orbiting) && canScan" title="Scan Waypoints">Scan Waypoints</button></li>
-      <li><button class="p-2 border-2 border-teal hover:bg-gray-hover mx-2" (click)="action('survey')" *ngIf="orbiting && miningWaypoint && canSurvey">Survey</button></li>
       <li><button class="p-2 border-2 border-teal hover:bg-gray-hover mx-2" (click)="action('mine')" *ngIf="orbiting && miningWaypoint && canMine">Mine</button></li>
     </ul>
   `
 })
-export class ShipActionsComponent implements OnInit, OnDestroy {
+export class ShipActionsComponent implements OnInit, OnDestroy, OnChanges {
   @Input() ship!: Ship;
   @Input() marketplaceWaypoint: boolean = false;
   @Input() miningWaypoint: boolean = false;
@@ -49,12 +48,19 @@ export class ShipActionsComponent implements OnInit, OnDestroy {
   constructor(private api: ApiService, public messageService: MessageService, public modalService: ModalService) {}
 
   ngOnInit(): void {
-    
     this.docked = this.ship.nav.status == NavStatus.DOCKED;
     this.orbiting = this.ship.nav.status == NavStatus.IN_ORBIT;
 
     this.canMine = this.ship.mounts.filter(m => m.symbol.includes("MINING_LASER")).length > 0;
     this.canSurvey = this.ship.mounts.filter(m => m.symbol.includes("SURVEYOR")).length > 0;
+    this.canScan = this.ship.mounts.filter(m => m.symbol.includes("SENSOR")).length > 0;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.docked = this.ship.nav.status == NavStatus.DOCKED;
+    this.orbiting = this.ship.nav.status == NavStatus.IN_ORBIT;
+
+    this.canMine = this.ship.mounts.filter(m => m.symbol.includes("MINING_LASER")).length > 0;
     this.canScan = this.ship.mounts.filter(m => m.symbol.includes("SENSOR")).length > 0;
   }
 
@@ -74,7 +80,7 @@ export class ShipActionsComponent implements OnInit, OnDestroy {
         MineComponent,
         {
           ship: this.ship,
-          updateShip: this.updateShip
+          update: this.updateShip
         }
       );
     }
@@ -105,20 +111,6 @@ export class ShipActionsComponent implements OnInit, OnDestroy {
           }
         );
       }
-    }
-
-    if (action == "survey") {
-      this.api.postSurvey(this.ship).pipe(
-        takeUntil(this.destroy$)
-      ).subscribe(
-        surveys => {
-          this.surveys = surveys;
-          this.messageService.addMessage(
-            `Surveyed ${this.ship.nav.waypointSymbol}, found ${surveys.length} locations to mine.`,
-            MessageType.GOOD
-          )
-        }
-      )
     }
   }
 }

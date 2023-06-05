@@ -1,20 +1,28 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Observable, Subject, map, switchMap, takeUntil } from 'rxjs';
+import { Observable, Subject, map, switchMap, take, takeUntil } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { WaypointsTraits } from 'src/app/enums/waypoints-traits';
 import { Waypoint } from 'src/app/interfaces/waypoint';
 import { WaypointType } from 'src/app/enums/waypoint-type';
 import { Ship } from 'src/app/interfaces/ship';
+import { ModalService } from 'src/app/services/modal.service';
+import { TransitShipComponent } from './actions/transit-ship/transit-ship.component';
 
 @Component({
   selector: 'app-waypoint',
   template: `
   <div *ngIf="waypoint$ | async as waypoint">
     <div class="mb-2 p-4 border-b-teal border-b-2 flex">
-        <h1 class="flex-auto text-4xl p-2">{{ waypoint.symbol }} <span class="text-sm">(<a class="hover:text-blue" [routerLink]="['/systems', waypoint.systemSymbol]">{{ waypoint.systemSymbol }}</a>) ({{waypoint.type}}) (x:{{waypoint.x}} y:{{waypoint.y}})</span></h1>
+        <h1 class="flex-auto text-4xl p-2">
+          {{ waypoint.symbol }} 
+          <span class="text-sm">
+            (<a class="hover:text-blue" [routerLink]="['/systems', waypoint.systemSymbol]">{{ waypoint.systemSymbol }}</a>) 
+            ({{waypoint.type}}) (x:{{waypoint.x}} y:{{waypoint.y}}) <span *ngIf="shipsAt$ | async as ships">(Ships: {{ships.length}})</span>
+          </span>
+        </h1>
         <ul>
-          <li *ngIf="shipsAt$ | async as ships">Ships: {{ships.length}}</li>
+          <li><button class="p-2 border-2 border-teal hover:bg-gray-hover mx-2" (click)="action('transit', {waypoint: waypoint})" title="Transit a ship to this waypoint">Transit Here</button></li>
         </ul>
     </div>
     <ul class="flex mb-4 ml-4">
@@ -28,16 +36,17 @@ import { Ship } from 'src/app/interfaces/ship';
 export class WaypointComponent implements OnInit, OnDestroy {
   traits = WaypointsTraits;
   types = WaypointType;
-  waypoint$!: Observable<Waypoint>;
+  waypointSubject: Subject<Waypoint> = new Subject<Waypoint>();
+  waypoint$: Observable<Waypoint> = this.waypointSubject.asObservable();
 
   shipsAt$!: Observable<Ship[]>;
 
   private destroy$: Subject<boolean> = new Subject<boolean>()
 
-  constructor(private api: ApiService, private router: ActivatedRoute) {}
+  constructor(private api: ApiService, private router: ActivatedRoute, private modalService: ModalService) {}
 
   ngOnInit() {
-    this.waypoint$ = this.router.paramMap.pipe(
+    let waypoint = this.router.paramMap.pipe(
       switchMap((params: ParamMap) => {
         let systemSymbol = params.get('systemSymbol');
         let waypointSymbol = params.get('waypointSymbol');
@@ -49,14 +58,15 @@ export class WaypointComponent implements OnInit, OnDestroy {
       })
     );
 
-    // TODO pagination
-    this.waypoint$.pipe(
-      takeUntil(this.destroy$)
+    waypoint.pipe(
+      take(1)
     ).subscribe(
       waypoint => {
+        // TODO pagination
         this.shipsAt$ = this.api.getShips(20, 1).pipe(
           map(response => response.data.filter(s => s.nav.waypointSymbol == waypoint.symbol))
         );
+        this.waypointSubject.next(waypoint)
       }
     );
   }
@@ -64,6 +74,28 @@ export class WaypointComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+  }
+
+  action(type: string, options: {waypoint?: Waypoint}): void {
+    if (type == "transit") {
+      this.modalService.addModal(
+        TransitShipComponent,
+        {
+          waypoint: options.waypoint,
+          update: this.updateWaypoint
+        }
+      );
+    }
+  }
+
+  updateWaypoint(waypoint: Waypoint | null): void {
+    if (waypoint) {
+      this.api.getWaypoint(waypoint.systemSymbol, waypoint.symbol).pipe(
+        take(1)
+      ).subscribe(
+        wp => this.waypointSubject.next(wp)
+      );
+    }
   }
 
   hasTrait(trait: WaypointsTraits, traits: any[]): boolean {

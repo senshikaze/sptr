@@ -27,6 +27,9 @@ export class MessageComponent {
     if (this.message.type == MessageType.ERROR) {
       this.class.push("bg-light-red", "border-dark-red", "text-white");
     }
+    if (this.message.type == MessageType.WARNING) {
+      this.class.push("bg-yellow-light", "border-yellow", "text-yellow-dark");
+    }
 
     timer(5500).subscribe(
       _ => {

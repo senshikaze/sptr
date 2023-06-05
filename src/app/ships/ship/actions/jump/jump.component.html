@@ -1,0 +1,30 @@
+
+<modal-container (close)="closeEvent.emit(true)">
+<div class="text-center text-gray border-b border-gray-600 mb-2"  >
+    <ul class="flex flex-wrap -mb-px" >
+        <li class="mr-2 p-4 cursor-pointer hover:text-teal" [ngClass]="selected == 'drive' ? ['border-b-2', 'border-teal-800', 'text-teal-800'] : ['border-transparent']" (click)="switch('drive')">Jump Drive</li>
+        <li class="mr-2 p-4 cursor-pointer hover:text-teal" [ngClass]="selected == 'gate' ? ['border-b-2', 'border-teal-800', 'text-teal-800'] : ['border-transparent']"(click)="switch('gate')">Jump Gate</li>
+    </ul>
+</div>
+<div *ngIf="!cooldown; else showcooling">
+    <div *ngIf="selected == 'drive'" class="overflow-y-auto">
+        <div class="mb-8" *ngIf="systems$ | async as systems">
+            <ul *ngIf="data.ship && systemsShip$ | async as systemShip">
+                <li class="px-4 cursor-pointer odd:bg-gray-hover" *ngFor="let system of systems" (click)="jump(data.ship, system.symbol)" [ngClass]="system | inRange : data.ship:systemShip">
+                    {{system.symbol}} ({{system.type}})
+                </li>
+            </ul>
+            <paginator [limit]="limit" [page]="page" [total]="total" (pageChangeEvent)="changeSystemsPage($event)"></paginator>
+        </div>
+    </div>
+    <div *ngIf="selected == 'gate'" class="mb-8" >
+        <ul *ngIf="jumpSystems$ | async as systems">
+            <li class="px-4 cursor-pointer odd:bg-gray-hover" *ngFor="let system of systems" (click)="jump(data.ship, system.symbol)">
+                {{system.symbol}} ({{system.type}})
+            </li>
+        </ul>
+    </div>
+</div>
+<ng-template #showcooling><spinner *ngIf="cooldown" [title]="title"]></spinner></ng-template>
+</modal-container>
+    

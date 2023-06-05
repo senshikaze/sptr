@@ -12,23 +12,20 @@ import { MessageType } from 'src/app/enums/message-type';
 @Component({
   selector: 'app-shiptransit',
   template: `
-    <div class="fixed min-h-screen min-w-screen inset-0 bg-opacity-80 bg-gray-dark backdrop-blur-sm" *ngIf="data.ship" (click)="closeEvent.emit(true)">
-      <div class="relative w-96 border-2 border-teal mx-auto my-44 p-8 bg-gray-dark" (click)="$event.stopPropagation()">
-        <div class="mb-8">  
-          <h2 class="text-xl mb-2">Transit to Waypoint:</h2>
-          <ul *ngIf="waypoints$ | async as waypoints">
-            <li class="px-4 cursor-pointer odd:bg-gray-hover" *ngFor="let waypoint of waypoints" (click)="startTransit(data.ship, waypoint)" title="{{waypoint.traits | joinTraits}}">{{waypoint.symbol}} ({{waypoint.type}})</li>
-          </ul>
-          <app-paginator [page]="page" [limit]="limit" [total]="total"></app-paginator>
-        </div>
-        <button class="absolute right-2 bottom-2 border-2 border-teal p-2 m-2 bg-gray-dark hover:text-gray" (click)="this.closeEvent.emit(true)">Cancel</button>
-      </div>
+  <modal-container (close)="closeEvent.emit(true)">
+    <div class="mb-8">  
+      <h2 class="text-xl mb-2">Transit to Waypoint:</h2>
+      <ul *ngIf="waypoints$ | async as waypoints">
+        <li class="px-4 cursor-pointer odd:bg-gray-hover" *ngFor="let waypoint of waypoints" (click)="startTransit(data.ship, waypoint)" title="{{waypoint.traits | joinTraits}}">{{waypoint.symbol}} ({{waypoint.type}})</li>
+      </ul>
+      <paginator [page]="page" [limit]="limit" [total]="total"></paginator>
     </div>
+  </modal-container>  
   `
 })
 export class TransitComponent implements OnInit, OnDestroy, ModalInterface {
   @Output() closeEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() updateShip: EventEmitter<Ship> = new EventEmitter<Ship>();
+  @Output() update: EventEmitter<Ship> = new EventEmitter<Ship>();
 
   data!: any;
 
@@ -59,21 +56,15 @@ export class TransitComponent implements OnInit, OnDestroy, ModalInterface {
   }
 
   startTransit(ship: Ship, waypoint: Waypoint): void {
-    this.api.post<Transit>(
-      `my/ships/${ship.symbol}/navigate`,
-      {
-        'waypointSymbol': waypoint.symbol 
-      }
-    ).pipe(
+    this.api.postNavigate(ship, waypoint).pipe(
       takeUntil(this.destroy$)
     ).subscribe(
       transit => {
-        let arrival = DateTime.fromISO(transit.data.nav.route.arrival).diff(DateTime.now());
         this.messageService.addMessage(
-          `Starting transit to ${this.data.ship.nav.waypointSymbol}, estimated arrival: ${DateTime.fromISO(transit.data.nav.route.arrival).toRelative()}`,
+          `Starting transit to ${this.data.ship.nav.waypointSymbol}, estimated arrival: ${DateTime.fromISO(transit.nav.route.arrival).toRelative()}`,
           MessageType.GOOD
         );
-        this.updateShip.emit(ship);
+        this.update.emit(ship);
         this.closeEvent.emit(true);
       }
     );

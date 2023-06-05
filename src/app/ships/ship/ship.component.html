@@ -12,7 +12,7 @@
             <h2 class="text-xl">Actions</h2>
             <app-ship-actions [ship]="ship" [marketplaceWaypoint]="marketplaceWaypoint" [miningWaypoint]="miningWaypoint" (updateShip)="updateShip($event)"></app-ship-actions>
         </div>
-        <app-shipcargo [ship]="ship"></app-shipcargo>
+        <app-shipcargo [ship]="ship" [marketplaceWaypoint]="marketplaceWaypoint" (updateShip)="updateShip($event)"></app-shipcargo>
         <app-shipcrew [ship]="ship"></app-shipcrew>
         <app-shipconfiguration [ship]="ship"></app-shipconfiguration>
     </div>

@@ -1,55 +1,88 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
 import { DateTime } from 'luxon';
-import { Observable, Subject, map, takeUntil } from 'rxjs';
+import { Observable, Subject, map, take, timer } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { MessageService } from 'src/app/services/message.service';
 import { MessageType } from 'src/app/enums/message-type';
-import { Extract } from 'src/app/interfaces/extract';
 import { ModalInterface } from 'src/app/interfaces/modal-interface';
 import { Ship } from 'src/app/interfaces/ship';
 import { Survey } from 'src/app/interfaces/survey';
+import { CooldownService, ShipCooldown } from 'src/app/services/cooldown.service';
 
 @Component({
   selector: 'app-shipmine',
   template: `
-    <div class="fixed min-h-screen min-w-screen inset-0 bg-opacity-80 bg-gray-dark backdrop-blur-sm" *ngIf="data.ship" (click)="closeEvent.emit(true)">
-      <div class="relative w-96 border-2 border-teal mx-auto my-44 p-8 bg-gray-dark" (click)="$event.stopPropagation()">
-        <div class="mb-8">  
-          <h2 class="text-xl">Select Survey:</h2>
-          <ul *ngIf="surveys$ | async as surveys">
-            <li class="px-4 cursor-pointer odd:bg-gray-hover" *ngFor="let survey of surveys" (click)="mine(data.ship, survey)" title="Expires: {{survey.expiration | relativedate}}">{{ survey.signature }} ({{ survey.deposits | joinDeposits }}) {{ survey.size }}</li>
-          </ul>
-        </div>
-        <button class="absolute right-2 bottom-2 border-2 border-teal p-2 m-2 bg-gray-dark hover:text-gray" (click)="closeEvent.emit(true)">Cancel</button>
+  <modal-container (close)="closeEvent.emit(true)">
+    <div class="mb-8" *ngIf="data.ship">
+      <h2 class="text-xl">Select Survey:</h2>
+      <div *ngIf="surveys$ | async as surveys">
+        <ul *ngIf="surveys.length > 0 ; else none">
+          <li class="px-4 odd:bg-gray-hover" *ngFor="let survey of surveys" title="Survey Expires {{survey.expiration | relativedate }}">
+            <div class="flex" [ngClass]="cooldown != null ? 'cursor-wait': 'cursor-pointer'" [title]="title" (click)="mine(data.ship, survey)">
+              <spinner *ngIf="cooldown != null" class="my-auto"></spinner>
+              {{ survey.signature }} ({{ survey.deposits | joinDeposits }}) {{ survey.size }} <span class="text-red cursor-pointer ml-2 text-lg" (click)="deleteSurvey(survey)" title="Delete this survey">X</span>
+            </div>
+          </li>
+        </ul>
+        <ng-template #none><ul><li>No surveys found</li></ul></ng-template>
       </div>
     </div>
+    <span actions>
+      <button class="border-2 border-teal p-2 m-2 bg-gray-dark hover:text-gray" [ngClass]="cooldown != null ? ['cursor-wait', 'disabled']: []" *ngIf="canSurvey" (click)="survey(data.ship)" title="Survey this waypoint">Survey</button>
+      <button class="border-2 border-teal p-2 m-2 bg-gray-dark hover:text-gray" [ngClass]="cooldown != null ? ['cursor-wait', 'disabled']: []" (click)="mine(data.ship)" title="Mine without a survey">Mine</button>
+    </span>
+  </modal-container>
   `
 })
-export class MineComponent implements OnInit, OnDestroy, ModalInterface {
+export class MineComponent implements OnInit, OnDestroy, OnChanges, ModalInterface {
   data!: any;
 
   surveys$!: Observable<Survey[]>;
+  cooldown: ShipCooldown | null = null;
+  canSurvey: boolean = false;
 
-  @Output() updateShip: EventEmitter<Ship> = new EventEmitter<Ship>();
+  @Output() update: EventEmitter<Ship> = new EventEmitter<Ship>();
   @Output() closeEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  title = "";
 
   private destroy$: Subject<boolean> = new Subject<boolean>();
 
-  constructor(private api: ApiService, public messageServie: MessageService) {}
+  constructor(private api: ApiService, public messageService: MessageService, private cooldownService: CooldownService) {}
 
   ngOnInit(): void {
     // get surveys (may be cached)
     if (this.data.ship) {
-      this.surveys$ = this.api.postSurvey(this.data.ship).pipe(
-        map(surveys => {
-          if (surveys.length == 0) {
-            this.closeEvent.emit(true);
-          }
-          return surveys;
-        })
-      );
+      let ship: Ship = this.data.ship as Ship;
+      this.surveys$ = this.api.getSurvey(ship);
+      this.canSurvey = ship.mounts.filter(m => m.symbol.includes("SURVEYOR")).length > 0;
     } else {
       this.closeEvent.emit(true);
+    }
+
+    // check to see if we are in cooldown
+    this.cooldownService.getShipCooldown(this.data.ship.symbol).pipe(
+      take(1)
+    ).subscribe(
+      cd => {
+        if (cd != null) {
+          this.cooldown = cd;
+          this.title =`Cooldown expires ${DateTime.fromISO(cd.cooldown.expiration).toRelative()}`;
+          timer(DateTime.fromISO(cd.cooldown.expiration).diff(DateTime.now()).milliseconds).pipe(
+            take(1)
+          ).subscribe(_ => {
+            this.title = "";
+            this.cooldown = null
+          });
+        }
+      }
+    );
+  }
+
+  ngOnChanges(): void {
+    if (this.data.ship) {
+      let ship: Ship = this.data.ship as Ship;
+      this.canSurvey = ship.mounts.filter(m => m.symbol.includes("SURVEYOR")).length > 0;
     }
   }
 
@@ -58,24 +91,39 @@ export class MineComponent implements OnInit, OnDestroy, ModalInterface {
     this.destroy$.unsubscribe();
   }
 
-  mine(ship: Ship, survey: Survey): void {
-    this.api.post<Extract>(
-      `my/ships/${ship.symbol}/extract`,
-      {
-        'survey': survey
-      }
-    ).pipe(
-      takeUntil(this.destroy$),
-      map(response => response.data)
+  deleteSurvey(survey: Survey): void {
+    this.surveys$ = this.api.deleteSurvey(survey);
+  }
+
+  mine(ship: Ship, survey: Survey | null = null): void {
+    if (this.cooldown != null) {
+      return;
+    }
+    this.api.postMine(ship, survey).pipe(
+      take(1)
     ).subscribe(
       extract => {
-        this.messageServie.addMessage(
+        this.messageService.addMessage(
           `Mined ${extract.extraction.yield.units} units of ${extract.extraction.yield.symbol}; Refresh ${DateTime.fromISO(extract.cooldown.expiration).toRelative()}`,
           MessageType.GOOD
         )
-        this.updateShip.emit(ship);
+        this.update.emit(ship);
         this.closeEvent.emit(true);
       }
     );
+  }
+
+  survey(ship: Ship): void {
+    this.api.postSurvey(ship).pipe(
+      take(1)
+    ).subscribe(
+      surveys => {
+        this.messageService.addMessage(
+          `Surveyed ${ship.nav.waypointSymbol}, found ${surveys.length} locations to mine.`,
+          MessageType.GOOD
+        )
+      }
+    );
+    this.surveys$ = this.api.getSurvey(ship);
   }
 }

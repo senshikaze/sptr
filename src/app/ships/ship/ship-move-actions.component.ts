@@ -9,6 +9,7 @@ import { Survey } from 'src/app/interfaces/survey';
 import { Waypoint } from 'src/app/interfaces/waypoint';
 import { TransitComponent } from './actions/transit/transit.component';
 import { JumpComponent } from './actions/jump/jump.component';
+import { formatNumber } from '@angular/common';
 
 @Component({
   selector: 'app-ship-move-actions',
@@ -86,7 +87,7 @@ export class ShipMoveActionsComponent implements OnInit, OnDestroy, OnChanges {
         JumpComponent,
         {
           ship: this.ship,
-          updateShip: this.updateShip
+          update: this.updateShip
         }
       )
     }
@@ -114,7 +115,8 @@ export class ShipMoveActionsComponent implements OnInit, OnDestroy, OnChanges {
         this.modalService.addModal(
           TransitComponent,
           {
-            ship: this.ship
+            ship: this.ship,
+            update: this.updateShip
           }
         );
       }

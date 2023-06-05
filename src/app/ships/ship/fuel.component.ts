@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { take } from 'rxjs';
+import { MessageType } from 'src/app/enums/message-type';
 import { NavStatus } from 'src/app/enums/nav-status';
 import { Ship } from 'src/app/interfaces/ship';
 import { ApiService } from 'src/app/services/api.service';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-fuel',
@@ -29,7 +31,7 @@ export class FuelComponent implements OnInit, OnChanges {
 
   docked = false;
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private messageService: MessageService) {}
 
   ngOnInit(): void {
     this.docked = this.ship.nav.status == NavStatus.DOCKED;
@@ -47,7 +49,13 @@ export class FuelComponent implements OnInit, OnChanges {
     this.api.postRefuel(this.ship).pipe(
       take(1)
     ).subscribe(
-      _ => this.updateShip.emit(this.ship)
+      refuel => {
+        this.messageService.addMessage(
+          `Refueled ${refuel.transaction.units} units of fuel for ${refuel.transaction.totalPrice}c`,
+          MessageType.GOOD
+        );
+        this.updateShip.emit(this.ship);
+      }
     )
   }
 }

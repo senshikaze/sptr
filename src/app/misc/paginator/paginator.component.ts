@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-paginator',
+  selector: 'paginator',
   template: `
     <ul *ngIf="pages > 1" class="flex">
       <li class="cursor-pointer p-1 hover:text-blue" title="First Page: 1" (click)="pageChange(1)">&lt;&lt;</li>

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -24,9 +24,9 @@ import { AgentComponent } from './agent/agent.component';
 import { PaginatorComponent } from './misc/paginator/paginator.component';
 import { LuxonDatePipe } from './pipes/luxon-date.pipe';
 import { LuxonRelativePipe } from './pipes/luxon-relative.pipe';
-import { ShipyardComponent } from './systems/waypoints/shipyard/shipyard.component';
-import { MarketplaceComponent } from './systems/waypoints/marketplace/marketplace.component';
-import { JumpGateComponent } from './systems/waypoints/jump-gate/jump-gate.component';
+import { ShipyardComponent } from './systems/waypoints/waypoint/shipyard/shipyard.component';
+import { MarketplaceComponent } from './systems/waypoints/waypoint/marketplace/marketplace.component';
+import { JumpGateComponent } from './systems/waypoints/waypoint/jump-gate/jump-gate.component';
 import { TransitComponent } from './ships/ship/actions/transit/transit.component';
 import { ModalDirective } from './modal.directive';
 import { ConditionPipe } from './pipes/condition.pipe';
@@ -44,6 +44,10 @@ import { ModalComponent } from './misc/modal/modal.component';
 import { InRangePipe } from './pipes/in-range.pipe';
 import { DistancePipe } from './pipes/distance.pipe';
 import { ShipMoveActionsComponent } from './ships/ship/ship-move-actions.component';
+import { SpinnerComponent } from './misc/spinner.component';
+import { TransitShipComponent } from './systems/waypoints/waypoint/actions/transit-ship/transit-ship.component';
+import { ModalContainerComponent } from './misc/modal/modal-container.component';
+import { JumpShipComponent } from './systems/waypoints/waypoint/jump-gate/actions/jump-ship.component';
 
 @NgModule({
   declarations: [
@@ -87,12 +91,17 @@ import { ShipMoveActionsComponent } from './ships/ship/ship-move-actions.compone
     InRangePipe,
     DistancePipe,
     ShipMoveActionsComponent,
+    SpinnerComponent,
+    TransitShipComponent,
+    ModalContainerComponent,
+    JumpShipComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

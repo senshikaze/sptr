@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { DateTime } from 'luxon';
-import { Observable, Subject, map, take, takeUntil } from 'rxjs';
+import { Observable, Subject, map, of, take, takeUntil, timer } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { MessageService } from 'src/app/services/message.service';
 import { MessageType } from 'src/app/enums/message-type';
@@ -11,37 +11,15 @@ import { Waypoint } from 'src/app/interfaces/waypoint';
 import { WaypointType } from 'src/app/enums/waypoint-type';
 import { JumpGate } from 'src/app/interfaces/jump-gate';
 import { ModuleSymbols } from 'src/app/enums/module-symbols';
+import { CooldownService, ShipCooldown } from 'src/app/services/cooldown.service';
 
 @Component({
   selector: 'app-jump',
-  template: `
-    <div class="fixed min-h-full min-w-full inset-0 bg-opacity-80 bg-gray-dark backdrop-blur-sm" (click)="closeEvent.emit(true)">
-      <div class="relative w-3/12 h-5/6 border-2 border-teal mx-auto my-32 p-8 bg-gray-dark max-h-1/2 overflow-scroll" (click)="$event.stopPropagation()" *ngIf="data.ship && systemsShip$ | async as systemShip">
-        <div class="mb-8" *ngIf="systems$ | async as systems">
-          <h2 class="text-xl">Select System to start Jump</h2>
-          <ul>
-            <li class="px-4 cursor-pointer odd:bg-gray-hover" *ngFor="let system of systems" (click)="jump(data.ship, system.symbol)" [ngClass]="system | inRange : data.ship:systemShip">
-              {{system.symbol}} ({{system.type}})
-            </li>
-          </ul>
-          <app-paginator [limit]="limit" [page]="page" [total]="total" (pageChangeEvent)="changeSystemsPage($event)"></app-paginator>
-        </div>
-        <div class="mb-8" *ngIf="jumpSystems$ | async as systems">
-          <h2 class="text-xl">Select System to start Jump</h2>
-          <ul>
-            <li class="px-4 cursor-pointer odd:bg-gray-hover" *ngFor="let system of systems" (click)="jump(data.ship, system.symbol)">
-              {{system.symbol}} ({{system.type}})
-            </li>
-          </ul>
-        </div>
-        <button class="absolute right-2 bottom-2 border-2 border-teal p-2 m-2 bg-gray-dark hover:text-gray" (click)="closeEvent.emit(true)">Cancel</button>
-      </div>
-    </div>
-  `
+  templateUrl: './jump.component.html'
 })
 export class JumpComponent implements OnInit, OnDestroy, ModalInterface {
   data!: any;
-  @Output() updateShip: EventEmitter<Ship> = new EventEmitter<Ship>();
+  @Output() update: EventEmitter<any> = new EventEmitter<any>();
   @Output() closeEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   jumpModules: ModuleSymbols[] = [
@@ -55,13 +33,17 @@ export class JumpComponent implements OnInit, OnDestroy, ModalInterface {
   jumpSystems$!: Observable<System[]>;
   waypoint$!: Observable<Waypoint>;
 
+  cooldown: ShipCooldown | null = null;
+  title = ""
+  selected = "drive";
+
   page = 1;
   total = 0;
   limit = 20;
 
   private destroy$: Subject<boolean> = new Subject<boolean>();
 
-  constructor(private api: ApiService, public messageService: MessageService) {}
+  constructor(private api: ApiService, public messageService: MessageService, private cooldownService: CooldownService) {}
 
   ngOnInit(): void {
     if (!this.data.ship) {
@@ -99,6 +81,25 @@ export class JumpComponent implements OnInit, OnDestroy, ModalInterface {
         );
       }
     });
+
+    // check to see if we are in cooldown
+    // check to see if we are in cooldown
+    this.cooldownService.getShipCooldown(this.data.ship.symbol).pipe(
+      take(1)
+    ).subscribe(
+      cd => {
+        if (cd != null) {
+          this.cooldown = cd;
+          this.title =`Cooldown expires ${DateTime.fromISO(cd.cooldown.expiration).toRelative()}`;
+          timer(DateTime.fromISO(cd.cooldown.expiration).diff(DateTime.now()).milliseconds).pipe(
+            take(1)
+          ).subscribe(_ => {
+            this.title = "";
+            this.cooldown = null
+          });
+        }
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -115,7 +116,7 @@ export class JumpComponent implements OnInit, OnDestroy, ModalInterface {
           `Jumped to system ${jumpAction.nav.systemSymbol}. Cooldown refreshes ${DateTime.fromISO(jumpAction.cooldown.expiration).toRelative()}`,
           MessageType.GOOD
         );
-        this.updateShip.emit(ship);
+        this.update.emit(ship);
         this.closeEvent.emit(true);
       }
     )
@@ -135,5 +136,10 @@ export class JumpComponent implements OnInit, OnDestroy, ModalInterface {
     return ship.modules.filter(
       mo => modules.map(m => m.toString()).includes(mo.symbol)
     ).length > 0;
+  }
+
+  switch(tab: string): void {
+    // TODO switch to an enum?
+    this.selected = tab;
   }
 }

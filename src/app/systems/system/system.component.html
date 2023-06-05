@@ -1,8 +1,8 @@
 <div *ngIf="system$ | async as system">
     <div class="mb-2 p-4 border-b-teal border-b-2 flex">
         <h1 class="flex-auto text-4xl p-2">{{ system.symbol }} <span class="text-sm">({{ system.sectorSymbol }}) ({{system.type}}) (x:{{system.x}} y:{{system.y}})</span></h1>
-        <p></p>
         <ul>
+            <li *ngIf="shipsIn$ | async as ships">Ships: {{ships.length}}</li>
         </ul>
     </div>
     <div>

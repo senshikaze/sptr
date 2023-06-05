@@ -23,6 +23,8 @@ import { SellCargo } from '../interfaces/sell-cargo';
 import { Inventory } from '../interfaces/inventory';
 import { ScanSystems } from '../interfaces/scan-systems';
 import { ScanWaypoints } from '../interfaces/scan-waypoints';
+import { Extract } from '../interfaces/extract';
+import { Transit } from '../interfaces/transit';
 
 const URL = "https://api.spacetraders.io/v2";
 
@@ -78,7 +80,7 @@ export class ApiService {
     return localStorage.getItem('accessCode');
   }
 
-  getFromLocalCache(key: string): Observable<any[]> {
+  getSurveyFromLocalCache(key: string): Observable<Survey[]> {
     let cache = this.loadFromLocalCache(key);
     let newCache = cache;
     let now = DateTime.now();
@@ -146,6 +148,14 @@ export class ApiService {
       'accessCode', accessCode
     );
     return accessCode;
+  }
+  /**
+   * Sets the cache of key to value
+   * @param key 
+   * @param value 
+   */
+  setLocalCache(key: string, value: any): void {
+    localStorage.setItem(key, JSON.stringify(value));
   }
 
   /** Generic API calls */
@@ -342,6 +352,38 @@ export class ApiService {
   // TODO split these out in their own service?
 
   /**
+   * Delete a survey from the cache, returning the remaing surveys
+   * 
+   * @param survey
+   * @returns
+   */
+  deleteSurvey(survey: Survey): Observable<Survey[]> {
+    return this.getSurveyFromLocalCache('surveys').pipe(
+      map(surveys => {
+        surveys = surveys.filter(s => s.signature != survey.signature);
+        this.setLocalCache('surveys', surveys);
+        return surveys;
+      })
+    );
+  }
+
+  /** 
+   * Get surveys from cache
+   * @param ship
+   * @returns
+   */
+  getSurvey(ship: Ship): Observable<Survey[]> {
+    let cacheHit: Survey[] = [];
+    (this.getSurveyFromLocalCache('surveys').pipe(
+      map((surveys: Survey[]) => surveys.filter(s => s.symbol == ship.nav.waypointSymbol)),
+      take(1)
+    ).subscribe(
+      surveys => cacheHit = surveys
+    ));
+    return of(cacheHit);
+  }
+
+  /**
    * Perform a Dock action
    * @param ship 
    * @returns
@@ -377,6 +419,38 @@ export class ApiService {
     )
   }
 
+  postMine(ship: Ship, survey: Survey | null): Observable<Extract> {
+    let body = null;
+    if (survey) {
+      body = {'survey': survey};
+    }
+    return this.post<Extract>(
+      `my/ships/${ship.symbol}/extract`,
+      body
+    ).pipe(
+      map(response => {
+        this.cooldownService.addCooldown(ship, response.data.cooldown);
+        return response.data
+      })
+    )
+  }
+
+  /**
+   * Perform a navigate (transit) action on a ship to a waypoint
+   * @param ship 
+   * @param waypoint 
+   * @returns 
+   */
+  postNavigate(ship: Ship, waypoint: Waypoint): Observable<Transit> {
+    return this.post<Transit>(
+      `my/ships/${ship.symbol}/navigate`,
+      {
+        'waypointSymbol': waypoint.symbol 
+      }
+    ).pipe(
+      map(response => response.data)
+    );
+  }
   /**
    * Perform an orbit action
    * @param ship 
@@ -452,30 +526,18 @@ export class ApiService {
   /**
    * 
    * Perform the survey action on a ship; caching the results
-   * 
-   * Before doing the survey, check the cache for a result, return that
-   * unless the timeout has passed, then remove the cached survey and POST
+   *
    *
    * Adds cooldown to the cooldown service
-   * @param ship 
+   * @param ship
    * @returns 
    */
   postSurvey(ship: Ship): Observable<Survey[]> {
-    // check the chache first
-    let cacheHit: Survey[] = [];
-    this.getFromLocalCache('surveys').pipe(
-      map((surveys: Survey[]) => surveys.filter(s => s.symbol == ship.nav.waypointSymbol)),
-      take(1)
-    ).subscribe(
-      surveys => cacheHit = surveys
-    )
-
-    if (cacheHit.length > 0) {
-      return of(cacheHit);
+    if (ship.mounts.filter(m => m.symbol.includes("SURVEYOR")).length == 0) {
+      return of([]);
     }
-
     if (!this.authenticated()) {
-      return of();
+      return of([]);
     }
     return this.post<SurveyAction>(
       `my/ships/${ship.symbol}/survey`
